@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Type, Palette, Save, Download, Plus, Trash2, ChevronDown, ChevronUp, RotateCcw, Target, ShieldCheck, Zap } from 'lucide-react';
 import ATSScoreCard from './ATSScoreCard';
 
-const Editor = ({ data, atsScore, onChange, onDownload, onReset }) => {
+const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheckATS, isScanning }) => {
     const [activeSection, setActiveSection] = useState('header');
+    const [locationEnabled, setLocationEnabled] = useState(false);
 
     const handleChange = (section, field, value, index = null, subField = null) => {
         const newData = { ...data };
 
         if (index !== null) {
-            const updatedArray = [...data[section]];
+            const updatedArray = [...(data[section] || [])];
             if (subField) {
                 updatedArray[index] = { ...updatedArray[index], [subField]: value };
             } else {
@@ -17,7 +18,7 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset }) => {
             }
             newData[section] = updatedArray;
         } else {
-            newData[section] = { ...data[section], [field]: value };
+            newData[section] = { ...(data[section] || {}), [field]: value };
         }
         onChange(newData);
     };
@@ -36,562 +37,496 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset }) => {
         });
     };
 
-    const [isCollapsed, setIsCollapsed] = useState(false);
-
     return (
         <div className="editor-sidebar no-print" style={{
-            width: isCollapsed ? '50px' : '400px',
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            padding: isCollapsed ? '10px' : '24px',
-            borderRight: '1px solid #e2e8f0',
-            height: '100vh',
-            overflowY: 'auto',
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-            position: 'relative',
+            width: '100%',
+            background: '#fff',
+            padding: '32px 24px',
             fontFamily: "'Plus Jakarta Sans', sans-serif",
-            boxShadow: '4px 0 24px rgba(0,0,0,0.02)'
+            color: '#1a202c'
         }}>
-            <button
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                style={{
-                    position: 'absolute',
-                    right: isCollapsed ? '50%' : '-15px',
-                    top: '20px',
-                    transform: isCollapsed ? 'translateX(50%)' : 'none',
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
-                    background: '#004AAD',
-                    color: 'white',
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    zIndex: 100
-                }}
-            >
-                {isCollapsed ? <ChevronDown style={{ transform: 'rotate(-90deg)' }} size={16} /> : <ChevronDown style={{ transform: 'rotate(90deg)' }} size={16} />}
-            </button>
+            {/* Professional Controls Segment */}
+            <div style={{ marginBottom: '40px' }}>
+                <div style={{ 
+                    padding: '20px', 
+                    border: '2.5px solid #1a202c', 
+                    borderRadius: '16px',
+                    background: '#fff',
+                    marginBottom: '24px',
+                    boxShadow: '8px 8px 0px #1a202c'
+                }}>
+                    <h2 style={{ fontSize: '1.2rem', fontWeight: '900', textTransform: 'uppercase', marginBottom: '20px', letterSpacing: '0.1em' }}>
+                        Editor <span style={{ color: '#004AAD' }}>Workspace</span>
+                    </h2>
 
-            {!isCollapsed && (
-                <>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px' }}>
-                        <div style={{
-                            width: '40px',
-                            height: '40px',
-                            background: '#1a202c',
-                            borderRadius: '10px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                        }}>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 4L4 8V16L12 20L20 16V8L12 4Z" stroke="white" strokeWidth="2" strokeLinejoin="round" />
-                                <path d="M12 8L8 12V14C8 14.5304 8.21071 15.0391 8.58579 15.4142C8.96086 15.7893 9.46957 16 10 16H14C14.5304 16 15.0391 15.7893 15.4142 15.4142C15.7893 15.0391 16 14.5304 16 14V12L12 8Z" fill="white" />
-                                <path d="M11 16V20L12 21L13 20V16" stroke="#1a202c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900', color: '#1a202c', letterSpacing: '-0.03em', textTransform: 'uppercase' }}>Resume <span style={{ color: '#004AAD' }}>Fix</span></h2>
-                            <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '600', letterSpacing: '0.1em', marginTop: '-2px' }}>PROFESSIONAL BUILDER</div>
-                        </div>
-                    </div>
-
-                    <div className="controls" style={{ marginBottom: '32px' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
-                            <button onClick={onDownload} style={{
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <button 
+                            onClick={() => setLocationEnabled(!locationEnabled)}
+                            style={{
+                                width: '100%',
                                 padding: '12px',
-                                background: '#004AAD',
-                                color: 'white',
+                                background: locationEnabled ? '#1a202c' : 'transparent',
+                                color: locationEnabled ? '#fff' : '#1a202c',
+                                border: '2px solid #1a202c',
+                                borderRadius: '10px',
+                                fontSize: '12px',
+                                fontWeight: '800',
+                                textTransform: 'uppercase',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            <ShieldCheck size={16} /> {locationEnabled ? 'LOCATION ENABLED' : 'ENABLE LOCATION'}
+                        </button>
+
+                        <button 
+                            onClick={onCheckATS}
+                            disabled={isScanning}
+                            style={{
+                                flex: 1,
+                                padding: '12px',
+                                background: isScanning ? '#f1f5f9' : '#004AAD',
+                                color: isScanning ? '#64748b' : '#fff',
                                 border: 'none',
                                 borderRadius: '10px',
-                                fontSize: '13px',
-                                fontWeight: '600',
+                                fontSize: '11px',
+                                fontWeight: '800',
+                                cursor: isScanning ? 'not-allowed' : 'pointer',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
                                 gap: '8px',
-                                cursor: 'pointer',
+                                justifyContent: 'center',
                                 transition: 'all 0.2s',
-                                boxShadow: '0 4px 12px rgba(0, 74, 173, 0.2)'
-                            }}>
-                                <Download size={14} /> Download
-                            </button>
-
-                            <button onClick={onReset} style={{
-                                padding: '12px',
-                                background: '#fff',
-                                color: '#dc3545',
-                                border: '1.5px solid #fee2e2',
-                                borderRadius: '10px',
-                                fontSize: '13px',
-                                fontWeight: '600',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s'
-                            }}>
-                                <RotateCcw size={14} /> Reset
-                            </button>
-                        </div>
-
-                        <div style={{ fontSize: '11px', color: '#94a3b8', textAlign: 'center', fontStyle: 'italic', background: '#f8fafc', padding: '8px', borderRadius: '8px' }}>
-                            ✨ Draft auto-saved locally
-                        </div>
-
-                        {/* Real-time ATS Hub */}
-                        <div style={{
-                            background: '#f8fafc',
-                            borderRadius: '16px',
-                            padding: '16px',
-                            border: '1px solid #f1f5f9',
-                            marginBottom: '24px'
-                        }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                                <Target size={18} style={{ color: '#004AAD' }} />
-                                <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Optimization Hub</h3>
-                            </div>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '15px' }}>
-                                <div style={{ background: 'white', padding: '12px', borderRadius: '12px', border: '1px solid #f1f5f9', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '1.2rem', fontWeight: '900', color: atsScore.overall > 70 ? '#22c55e' : '#f59e0b' }}>{atsScore.overall}%</div>
-                                    <div style={{ fontSize: '9px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' }}>ATS Match</div>
-                                </div>
-                                <div style={{ background: 'white', padding: '12px', borderRadius: '12px', border: '1px solid #f1f5f9', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '1.2rem', fontWeight: '900', color: '#6366f1' }}>{atsScore.sections?.skills || 0}%</div>
-                                    <div style={{ fontSize: '9px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' }}>Keywords</div>
-                                </div>
-                            </div>
-
-                            {atsScore.feedback?.length > 0 && (
-                                <div style={{ background: 'rgba(212, 175, 55, 0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                                        <Zap size={14} style={{ color: 'var(--gold-accent)' }} />
-                                        <span style={{ fontSize: '0.8rem', fontWeight: '800', color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Optimization Roadmap</span>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                        {atsScore.feedback.slice(0, 3).map((tip, i) => (
-                                            <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                                                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--gold-accent)', marginTop: '6px' }}></div>
-                                                <p style={{ margin: 0, fontSize: '0.75rem', color: '#92400e', lineHeight: '1.5', fontWeight: '500' }}>
-                                                    {tip}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                opacity: isScanning ? 0.7 : 1,
+                                boxShadow: isScanning ? 'none' : '0 4px 12px rgba(0, 74, 173, 0.2)'
+                            }}
+                        >
+                            {isScanning ? (
+                                <>
+                                    <RotateCcw size={16} className="animate-spin" /> SCANNING...
+                                </>
+                            ) : (
+                                <>
+                                    <ShieldCheck size={16} /> CHECK ATS SCORE
+                                </>
                             )}
+                        </button>
+
+                        <div style={{ position: 'relative' }}>
+                            <div style={{ 
+                                position: 'absolute', 
+                                left: '12px', 
+                                top: '50%', 
+                                transform: 'translateY(-50%)',
+                                color: '#1a202c',
+                                display: 'flex'
+                            }}>
+                                <Target size={16} />
+                            </div>
+                            <input 
+                                placeholder="TARGET ROLE (e.g. Frontend Engineer)"
+                                value={data.targetRole || ''}
+                                onChange={(e) => onChange({ ...data, targetRole: e.target.value })}
+                                style={{
+                                    width: '100%',
+                                    padding: '12px 12px 12px 40px',
+                                    background: '#f8fafc',
+                                    border: '2px solid #1a202c',
+                                    borderRadius: '10px',
+                                    fontSize: '11px',
+                                    fontWeight: '700',
+                                    textTransform: 'uppercase',
+                                    outline: 'none',
+                                    color: '#1a202c'
+                                }}
+                            />
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    {/* Settings */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'settings' ? '' : 'settings')} style={headerStyle}>
-                            <Palette size={16} /> Appearance
-                        </h3>
-                        {activeSection === 'settings' && (
-                            <div className="fields">
-                                <label>Template</label>
-                                <select
-                                    value={data.settings.template || 'standard'}
-                                    onChange={(e) => handleChange('settings', 'template', e.target.value)}
-                                    style={inputStyle}
-                                >
-                                    <option value="standard">Standard</option>
-                                    <option value="modern">Modern</option>
-                                    <option value="minimalist">Minimalist</option>
-                                </select>
-                                <label>Theme Color</label>
-                                <input
-                                    type="color"
-                                    value={data.settings.themeColor}
-                                    onChange={(e) => handleChange('settings', 'themeColor', e.target.value)}
-                                    style={{ width: '100%', padding: '5px' }}
-                                />
-                                <label>Font Family</label>
-                                <select
-                                    value={data.settings.fontFamily}
-                                    onChange={(e) => handleChange('settings', 'fontFamily', e.target.value)}
-                                    style={inputStyle}
-                                >
-                                    <option value="Georgia, serif">Georgia</option>
-                                    <option value="Arial, sans-serif">Arial</option>
-                                    <option value="'Times New Roman', Times, serif">Times New Roman</option>
-                                </select>
-
-
-                                <hr style={{ margin: '15px 0', border: 'none', borderTop: '1px solid #ddd' }} />
-                                <label style={{ fontWeight: 'bold', fontSize: '12px' }}>Section Titles</label>
-                                <div style={{ marginTop: '10px' }}>
-                                    {Object.keys(data.sectionTitles || {}).map(key => (
-                                        <div key={key} style={{ marginBottom: '5px' }}>
-                                            <label style={{ fontSize: '11px', textTransform: 'capitalize' }}>{key}</label>
-                                            <input
-                                                value={data.sectionTitles[key]}
-                                                onChange={(e) => {
-                                                    const titles = { ...data.sectionTitles, [key]: e.target.value };
-                                                    onChange({ ...data, sectionTitles: titles });
-                                                }}
-                                                style={{ ...inputStyle, padding: '5px', fontSize: '12px' }}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+            {/* Input Sections */}
+            <div className="editor-sections">
+                {/* Person Info */}
+                <div className="section-block" style={{ marginBottom: '16px' }}>
+                    <div 
+                        onClick={() => setActiveSection(activeSection === 'header' ? '' : 'header')} 
+                        style={sectionHeaderStyle(activeSection === 'header')}
+                    >
+                        <span>PERSONAL INFO</span>
+                        {activeSection === 'header' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </div>
-
-                    {/* Header Data */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'header' ? '' : 'header')} style={headerStyle}>
-                            Person Info
-                        </h3>
-                        {activeSection === 'header' && (
-                            <div className="fields">
-                                <input
-                                    placeholder="Full Name"
-                                    value={data.header.name}
-                                    onChange={(e) => handleChange('header', 'name', e.target.value)}
-                                    style={inputStyle}
-                                />
-                                {data.header.links.map((link, i) => (
-                                    <div key={i} style={{ marginBottom: '10px', padding: '10px', background: 'white', borderRadius: '4px', border: '1px solid #eee' }}>
-                                        <div style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}>
-                                            <input
-                                                placeholder="Label (e.g. LinkedIn)"
-                                                value={link.label}
-                                                onChange={(e) => {
-                                                    const links = [...data.header.links];
-                                                    links[i].label = e.target.value;
-                                                    handleChange('header', 'links', links);
-                                                }}
-                                                style={{ ...inputStyle, marginBottom: '0' }}
-                                            />
-                                            <button onClick={() => {
-                                                const links = [...data.header.links];
-                                                links.splice(i, 1);
-                                                handleChange('header', 'links', links);
-                                            }} style={{ ...deleteBtnStyle, marginTop: '0' }}><Trash2 size={12} /></button>
-                                        </div>
+                    {activeSection === 'header' && (
+                        <div style={sectionContentStyle}>
+                            <input
+                                placeholder="Full Name"
+                                value={data.header.name}
+                                onChange={(e) => handleChange('header', 'name', e.target.value)}
+                                style={refinedInputStyle}
+                            />
+                            {data.header.links.map((link, i) => (
+                                <div key={i} style={cardStyle}>
+                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                                         <input
-                                            placeholder="URL"
-                                            value={link.url}
+                                            placeholder="Label"
+                                            value={link.label}
                                             onChange={(e) => {
                                                 const links = [...data.header.links];
-                                                links[i].url = e.target.value;
+                                                links[i].label = e.target.value;
                                                 handleChange('header', 'links', links);
                                             }}
-                                            style={{ ...inputStyle, marginBottom: '0' }}
-                                        />
-                                    </div>
-                                ))}
-                                <button onClick={() => {
-                                    const links = [...data.header.links];
-                                    links.push({ label: 'New Link', url: '', type: '' });
-                                    handleChange('header', 'links', links);
-                                }} style={addBtnStyle}><Plus size={12} /> Add Contact Link</button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Skills */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'skills' ? '' : 'skills')} style={headerStyle}>
-                            Skills
-                        </h3>
-                        {activeSection === 'skills' && (
-                            <div className="fields">
-                                {data.skills.categories.map((cat, i) => (
-                                    <div key={i} style={{ borderBottom: '1px solid #eee', marginBottom: '10px', paddingBottom: '10px' }}>
-                                        <input
-                                            placeholder="Category Name"
-                                            value={cat.name}
-                                            onChange={(e) => {
-                                                const cats = [...data.skills.categories];
-                                                cats[i].name = e.target.value;
-                                                handleChange('skills', 'categories', cats);
-                                            }}
-                                            style={{ ...inputStyle, fontWeight: 'bold' }}
-                                        />
-                                        <textarea
-                                            placeholder="Items (comma separated)"
-                                            value={cat.items}
-                                            onChange={(e) => {
-                                                const cats = [...data.skills.categories];
-                                                cats[i].items = e.target.value;
-                                                handleChange('skills', 'categories', cats);
-                                            }}
-                                            style={textareaStyle}
+                                            style={{ ...refinedInputStyle, marginBottom: 0 }}
                                         />
                                         <button onClick={() => {
+                                            const links = [...data.header.links];
+                                            links.splice(i, 1);
+                                            handleChange('header', 'links', links);
+                                        }} style={deleteSmallBtnStyle}><Trash2 size={14} /></button>
+                                    </div>
+                                    <input
+                                        placeholder="URL"
+                                        value={link.url}
+                                        onChange={(e) => {
+                                            const links = [...data.header.links];
+                                            links[i].url = e.target.value;
+                                            handleChange('header', 'links', links);
+                                        }}
+                                        style={{ ...refinedInputStyle, marginBottom: 0 }}
+                                    />
+                                </div>
+                            ))}
+                            <button onClick={() => {
+                                const links = [...data.header.links];
+                                links.push({ label: '', url: '', type: '' });
+                                handleChange('header', 'links', links);
+                            }} style={addBtnStyle}><Plus size={14} /> Add Contact Link</button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Professional Summary */}
+                <div className="section-block" style={{ marginBottom: '16px' }}>
+                    <div 
+                        onClick={() => setActiveSection(activeSection === 'summary' ? '' : 'summary')} 
+                        style={sectionHeaderStyle(activeSection === 'summary')}
+                    >
+                        <span>PROFESSIONAL SUMMARY</span>
+                        {activeSection === 'summary' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </div>
+                    {activeSection === 'summary' && (
+                        <div style={sectionContentStyle}>
+                            <textarea
+                                placeholder="Brief professional overview..."
+                                value={data.summary || ''}
+                                onChange={(e) => onChange({ ...data, summary: e.target.value })}
+                                style={{ ...refinedTextareaStyle, minHeight: '150px' }}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                {/* Skills */}
+                <div className="section-block" style={{ marginBottom: '16px' }}>
+                    <div 
+                        onClick={() => setActiveSection(activeSection === 'skills' ? '' : 'skills')} 
+                        style={sectionHeaderStyle(activeSection === 'skills')}
+                    >
+                        <span>TECHNICAL SKILLS</span>
+                        {activeSection === 'skills' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </div>
+                    {activeSection === 'skills' && (
+                        <div style={sectionContentStyle}>
+                            {data.skills.categories.map((cat, i) => (
+                                <div key={i} style={cardStyle}>
+                                    <input
+                                        placeholder="Category"
+                                        value={cat.name}
+                                        onChange={(e) => {
                                             const cats = [...data.skills.categories];
-                                            cats.splice(i, 1);
+                                            cats[i].name = e.target.value;
                                             handleChange('skills', 'categories', cats);
-                                        }} style={deleteBtnStyle}><Trash2 size={12} /> Remove Category</button>
-                                    </div>
-                                ))}
-                                <button onClick={() => {
-                                    const cats = [...data.skills.categories];
-                                    cats.push({ name: 'New Category', items: '' });
-                                    handleChange('skills', 'categories', cats);
-                                }} style={addBtnStyle}><Plus size={12} /> Add Category</button>
-                            </div>
-                        )}
-                    </div>
+                                        }}
+                                        style={{ ...refinedInputStyle, fontWeight: '800' }}
+                                    />
+                                    <textarea
+                                        placeholder="Skills (comma separated)"
+                                        value={cat.items}
+                                        onChange={(e) => {
+                                            const cats = [...data.skills.categories];
+                                            cats[i].items = e.target.value;
+                                            handleChange('skills', 'categories', cats);
+                                        }}
+                                        style={{ ...refinedTextareaStyle, minHeight: '80px' }}
+                                    />
+                                    <button onClick={() => {
+                                        const cats = [...data.skills.categories];
+                                        cats.splice(i, 1);
+                                        handleChange('skills', 'categories', cats);
+                                    }} style={deleteSmallBtnStyle}><Trash2 size={14} /> Remove Category</button>
+                                </div>
+                            ))}
+                            <button onClick={() => {
+                                const cats = [...data.skills.categories];
+                                cats.push({ name: '', items: '' });
+                                handleChange('skills', 'categories', cats);
+                            }} style={addBtnStyle}><Plus size={14} /> Add Skill Set</button>
+                        </div>
+                    )}
+                </div>
 
-                    {/* Experience / Internship */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'experience' ? '' : 'experience')} style={headerStyle}>
-                            Internship
-                        </h3>
-                        {activeSection === 'experience' && (
-                            <div className="fields">
-                                {data.experience.map((exp, i) => (
-                                    <div key={i} style={cardStyle}>
-                                        <input value={exp.company} onChange={(e) => handleChange('experience', 'company', e.target.value, i, 'company')} style={inputStyle} placeholder="Company" />
-                                        <div style={{ display: 'flex', gap: '5px' }}>
-                                            <input value={exp.role} onChange={(e) => handleChange('experience', 'role', e.target.value, i, 'role')} style={inputStyle} placeholder="Role" />
-                                            <input value={exp.category || ''} onChange={(e) => handleChange('experience', 'category', e.target.value, i, 'category')} style={inputStyle} placeholder="Category" />
-                                        </div>
-                                        <input value={exp.date} onChange={(e) => handleChange('experience', 'date', e.target.value, i, 'date')} style={inputStyle} placeholder="Date" />
-                                        <textarea
-                                            value={exp.description.join('\n')}
-                                            onChange={(e) => handleChange('experience', 'description', e.target.value.split('\n'), i, 'description')}
-                                            style={textareaStyle}
-                                            placeholder="Description (one per line)"
+                {/* Experience */}
+                <div className="section-block" style={{ marginBottom: '16px' }}>
+                    <div 
+                        onClick={() => setActiveSection(activeSection === 'experience' ? '' : 'experience')} 
+                        style={sectionHeaderStyle(activeSection === 'experience')}
+                    >
+                        <span>WORK EXPERIENCE</span>
+                        {activeSection === 'experience' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </div>
+                    {activeSection === 'experience' && (
+                        <div style={sectionContentStyle}>
+                            {data.experience.map((exp, i) => (
+                                <div key={i} style={cardStyle}>
+                                    <input value={exp.company} onChange={(e) => handleChange('experience', 'company', e.target.value, i, 'company')} style={refinedInputStyle} placeholder="Company" />
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <input value={exp.role} onChange={(e) => handleChange('experience', 'role', e.target.value, i, 'role')} style={refinedInputStyle} placeholder="Role" />
+                                        <input value={exp.date} onChange={(e) => handleChange('experience', 'date', e.target.value, i, 'date')} style={refinedInputStyle} placeholder="Date" />
+                                    </div>
+                                    <textarea
+                                        value={exp.description.join('\n')}
+                                        onChange={(e) => handleChange('experience', 'description', e.target.value.split('\n'), i, 'description')}
+                                        style={refinedTextareaStyle}
+                                        placeholder="Bullets (one per line)"
+                                    />
+                                    <button onClick={() => removeArrayItem('experience', i)} style={deleteSmallBtnStyle}><Trash2 size={14} /> Remove Entry</button>
+                                </div>
+                            ))}
+                            <button onClick={() => addArrayItem('experience', { company: '', role: '', date: '', description: [] })} style={addBtnStyle}><Plus size={14} /> Add Experience</button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Projects */}
+                <div className="section-block" style={{ marginBottom: '16px' }}>
+                    <div 
+                        onClick={() => setActiveSection(activeSection === 'projects' ? '' : 'projects')} 
+                        style={sectionHeaderStyle(activeSection === 'projects')}
+                    >
+                        <span>PROJECTS</span>
+                        {activeSection === 'projects' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </div>
+                    {activeSection === 'projects' && (
+                        <div style={sectionContentStyle}>
+                            {data.projects.map((proj, i) => (
+                                <div key={i} style={cardStyle}>
+                                    <input value={proj.title} onChange={(e) => handleChange('projects', 'title', e.target.value, i, 'title')} style={refinedInputStyle} placeholder="Project Name" />
+                                    <input value={proj.techStack} onChange={(e) => handleChange('projects', 'techStack', e.target.value, i, 'techStack')} style={refinedInputStyle} placeholder="Technologies" />
+                                    <textarea
+                                        value={proj.description.join('\n')}
+                                        onChange={(e) => handleChange('projects', 'description', e.target.value.split('\n'), i, 'description')}
+                                        style={refinedTextareaStyle}
+                                        placeholder="Description Bullets"
+                                    />
+                                    <button onClick={() => removeArrayItem('projects', i)} style={deleteSmallBtnStyle}><Trash2 size={14} /> Remove Project</button>
+                                </div>
+                            ))}
+                            <button onClick={() => addArrayItem('projects', { title: '', techStack: '', date: '', description: [] })} style={addBtnStyle}><Plus size={14} /> Add Project</button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Appearance */}
+                <div className="section-block" style={{ marginBottom: '16px' }}>
+                    <div 
+                        onClick={() => setActiveSection(activeSection === 'settings' ? '' : 'settings')} 
+                        style={sectionHeaderStyle(activeSection === 'settings')}
+                    >
+                        <span>APPEARANCE & TYPE</span>
+                        {activeSection === 'settings' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </div>
+                    {activeSection === 'settings' && (
+                        <div style={sectionContentStyle}>
+                            <label style={labelStyle}>Template Style</label>
+                            <select
+                                value={data.settings.template || 'standard'}
+                                onChange={(e) => handleChange('settings', 'template', e.target.value)}
+                                style={refinedSelectStyle}
+                            >
+                                <option value="standard">Standard Professional</option>
+                                <option value="modern">Modern Creative</option>
+                                <option value="minimalist">Minimalist Exec</option>
+                            </select>
+                            
+                            <label style={labelStyle}>Theme Color</label>
+                            <input
+                                type="color"
+                                value={data.settings.themeColor}
+                                onChange={(e) => handleChange('settings', 'themeColor', e.target.value)}
+                                style={{ width: '100%', height: '40px', padding: '4px', border: '2px solid #1a202c', borderRadius: '8px', cursor: 'pointer', marginBottom: '16px' }}
+                            />
+
+                            <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                <label style={{ ...labelStyle, color: '#1a202c', marginBottom: '12px' }}>Custom Section Headings</label>
+                                {Object.keys(data.sectionTitles || {}).map(key => (
+                                    <div key={key} style={{ marginBottom: '12px' }}>
+                                        <label style={{ fontSize: '9px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px', display: 'block' }}>{key}</label>
+                                        <input
+                                            value={data.sectionTitles[key]}
+                                            onChange={(e) => {
+                                                const titles = { ...data.sectionTitles, [key]: e.target.value };
+                                                onChange({ ...data, sectionTitles: titles });
+                                            }}
+                                            style={{ ...refinedInputStyle, padding: '8px 12px', fontSize: '12px', marginBottom: 0 }}
                                         />
-                                        <button onClick={() => removeArrayItem('experience', i)} style={deleteBtnStyle}><Trash2 size={12} /> Remove Role</button>
                                     </div>
                                 ))}
-                                <button onClick={() => addArrayItem('experience', { company: 'New Company', role: '', category: '', date: '', description: [] })} style={addBtnStyle}><Plus size={12} /> Add Internship</button>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
+                </div>
 
-                    {/* Projects */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'projects' ? '' : 'projects')} style={headerStyle}>
-                            Projects
-                        </h3>
-                        {activeSection === 'projects' && (
-                            <div className="fields">
-                                {data.projects.map((proj, i) => (
-                                    <div key={i} style={cardStyle}>
-                                        <input value={proj.title} onChange={(e) => handleChange('projects', 'title', e.target.value, i, 'title')} style={inputStyle} placeholder="Title" />
-                                        <input value={proj.date} onChange={(e) => handleChange('projects', 'date', e.target.value, i, 'date')} style={inputStyle} placeholder="Date" />
-                                        <input value={proj.techStack} onChange={(e) => handleChange('projects', 'techStack', e.target.value, i, 'techStack')} style={inputStyle} placeholder="Tech Stack" />
-
-                                        <div style={{ marginBottom: '10px' }}>
-                                            <label style={{ fontSize: '12px', fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Project Links</label>
-                                            {(proj.links || []).map((link, lIdx) => (
-                                                <div key={lIdx} style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}>
-                                                    <input
-                                                        placeholder="Label"
-                                                        value={link.label}
-                                                        onChange={(e) => {
-                                                            const newLinks = [...proj.links];
-                                                            newLinks[lIdx] = { ...newLinks[lIdx], label: e.target.value };
-                                                            handleChange('projects', 'links', newLinks, i, 'links');
-                                                        }}
-                                                        style={{ ...inputStyle, marginBottom: 0, flex: 1 }}
-                                                    />
-                                                    <input
-                                                        placeholder="URL"
-                                                        value={link.url}
-                                                        onChange={(e) => {
-                                                            const newLinks = [...proj.links];
-                                                            newLinks[lIdx] = { ...newLinks[lIdx], url: e.target.value };
-                                                            handleChange('projects', 'links', newLinks, i, 'links');
-                                                        }}
-                                                        style={{ ...inputStyle, marginBottom: 0, flex: 2 }}
-                                                    />
-                                                    <button onClick={() => {
-                                                        const newLinks = proj.links.filter((_, idx) => idx !== lIdx);
-                                                        handleChange('projects', 'links', newLinks, i, 'links');
-                                                    }} style={{ ...deleteBtnStyle, marginTop: 0 }}><Trash2 size={12} /></button>
-                                                </div>
-                                            ))}
-                                            <button onClick={() => {
-                                                const newLinks = [...(proj.links || []), { label: 'Link', url: '' }];
-                                                handleChange('projects', 'links', newLinks, i, 'links');
-                                            }} style={{ ...addBtnStyle, background: '#6c757d', marginTop: '5px' }}><Plus size={12} /> Add Link</button>
-                                        </div>
-
-                                        <textarea
-                                            value={proj.summary || ''}
-                                            onChange={(e) => handleChange('projects', 'summary', e.target.value, i, 'summary')}
-                                            style={{ ...textareaStyle, minHeight: '60px', marginBottom: '15px' }}
-                                            placeholder="Project Summary (Paragraph)"
-                                        />
-
-                                        <textarea
-                                            value={proj.description ? proj.description.join('\n') : ''}
-                                            onChange={(e) => handleChange('projects', 'description', e.target.value.split('\n'), i, 'description')}
-                                            style={textareaStyle}
-                                            placeholder="Description Bullets (one per line)"
-                                        />
-                                        <button onClick={() => removeArrayItem('projects', i)} style={deleteBtnStyle}><Trash2 size={12} /> Remove Project</button>
-                                    </div>
-                                ))}
-                                <button onClick={() => addArrayItem('projects', { title: 'New Project', date: '', techStack: '', summary: '', description: [], links: [] })} style={addBtnStyle}><Plus size={12} /> Add Project</button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Certifications / Training */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'certifications' ? '' : 'certifications')} style={headerStyle}>
-                            Training
-                        </h3>
-                        {activeSection === 'certifications' && (
-                            <div className="fields">
-                                {data.certifications.map((cert, i) => (
-                                    <div key={i} style={cardStyle}>
-                                        <input value={cert.name} onChange={(e) => handleChange('certifications', 'name', e.target.value, i, 'name')} style={inputStyle} placeholder="Name" />
-                                        <input value={cert.provider} onChange={(e) => handleChange('certifications', 'provider', e.target.value, i, 'provider')} style={inputStyle} placeholder="Provider" />
-                                        <input value={cert.date} onChange={(e) => handleChange('certifications', 'date', e.target.value, i, 'date')} style={inputStyle} placeholder="Date" />
-                                        <input value={cert.link} onChange={(e) => handleChange('certifications', 'link', e.target.value, i, 'link')} style={inputStyle} placeholder="Link" />
-                                        <button onClick={() => removeArrayItem('certifications', i)} style={deleteBtnStyle}><Trash2 size={12} /> Remove</button>
-                                    </div>
-                                ))}
-                                <button onClick={() => addArrayItem('certifications', { name: 'New Certification', provider: '', date: '', link: '' })} style={addBtnStyle}><Plus size={12} /> Add Certification</button>
-                            </div>
-                        )}
-                    </div>
-
-
-                    {/* Achievements */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'achievements' ? '' : 'achievements')} style={headerStyle}>
-                            Achievements
-                        </h3>
-                        {activeSection === 'achievements' && (
-                            <div className="fields">
-                                {data.achievements.map((ach, i) => (
-                                    <div key={i} style={{ marginBottom: '10px' }}>
-                                        <textarea
-                                            value={ach}
-                                            onChange={(e) => handleChange('achievements', null, e.target.value, i)}
-                                            style={textareaStyle}
-                                            placeholder="Achievement"
-                                        />
-                                        <button onClick={() => removeArrayItem('achievements', i)} style={deleteBtnStyle}><Trash2 size={12} /> Remove</button>
-                                    </div>
-                                ))}
-                                <button onClick={() => addArrayItem('achievements', "New Achievement")} style={addBtnStyle}><Plus size={12} /> Add Achievement</button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Education */}
-                    <div className="section-block">
-                        <h3 onClick={() => setActiveSection(activeSection === 'education' ? '' : 'education')} style={headerStyle}>
-                            Education
-                        </h3>
-                        {activeSection === 'education' && (
-                            <div className="fields">
-                                {data.education.map((edu, i) => (
-                                    <div key={i} style={cardStyle}>
-                                        <input value={edu.institution} onChange={(e) => handleChange('education', 'institution', e.target.value, i, 'institution')} style={inputStyle} placeholder="Institution" />
-                                        <input value={edu.location} onChange={(e) => handleChange('education', 'location', e.target.value, i, 'location')} style={inputStyle} placeholder="Location" />
-                                        <input value={edu.degree} onChange={(e) => handleChange('education', 'degree', e.target.value, i, 'degree')} style={inputStyle} placeholder="Degree" />
-                                        <input value={edu.date} onChange={(e) => handleChange('education', 'date', e.target.value, i, 'date')} style={inputStyle} placeholder="Date" />
-                                        <button onClick={() => removeArrayItem('education', i)} style={deleteBtnStyle}><Trash2 size={12} /> Remove</button>
-                                    </div>
-                                ))}
-                                <button onClick={() => addArrayItem('education', { institution: 'New Institution', location: '', degree: '', date: '' })} style={addBtnStyle}><Plus size={12} /> Add Education</button>
-                            </div>
-                        )}
-                    </div>
-                </>
-            )}
+                {/* Reset Action */}
+                <button 
+                    onClick={onReset}
+                    style={{
+                        width: '100%',
+                        padding: '16px',
+                        background: '#fee2e2',
+                        color: '#b91c1c',
+                        border: '2px solid #f87171',
+                        borderRadius: '16px',
+                        fontSize: '12px',
+                        fontWeight: '800',
+                        textTransform: 'uppercase',
+                        marginTop: '24px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                    }}
+                >
+                    <RotateCcw size={16} /> Reset All Data
+                </button>
+            </div>
         </div>
     );
 };
-const headerStyle = {
-    cursor: 'pointer',
-    padding: '14px 16px',
-    background: '#f8fafc',
-    borderRadius: '12px',
-    marginBottom: '8px',
+
+// --- STYLING MACROS ---
+const sectionHeaderStyle = (isActive) => ({
+    padding: '16px 20px',
+    background: isActive ? '#1a202c' : '#fff',
+    color: isActive ? '#fff' : '#1a202c',
+    border: '2.5px solid #1a202c',
+    borderRadius: '16px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    fontSize: '14px',
+    cursor: 'pointer',
+    fontSize: '11px',
+    fontWeight: '900',
+    letterSpacing: '0.1em',
+    transition: 'all 0.2s',
+    boxShadow: isActive ? 'none' : '4px 4px 0px #1a202c'
+});
+
+const sectionContentStyle = {
+    padding: '24px 8px 8px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px'
+};
+
+const refinedInputStyle = {
+    width: '100%',
+    padding: '12px 16px',
+    background: '#fff',
+    border: '2px solid #cbd5e1',
+    borderRadius: '12px',
+    fontSize: '13px',
     fontWeight: '600',
     color: '#334155',
+    outline: 'none',
     transition: 'all 0.2s',
-    border: '1px solid #f1f5f9'
+    marginBottom: '8px'
 };
 
-const inputStyle = {
+const refinedTextareaStyle = {
     width: '100%',
-    padding: '10px 12px',
-    marginBottom: '12px',
-    border: '1px solid #e2e8f0',
-    borderRadius: '8px',
+    padding: '12px 16px',
+    background: '#fff',
+    border: '2px solid #cbd5e1',
+    borderRadius: '12px',
     fontSize: '13px',
+    lineHeight: '1.6',
+    fontWeight: '500',
+    color: '#334155',
     outline: 'none',
-    transition: 'border-color 0.2s',
-    background: '#fff'
+    resize: 'vertical',
+    fontFamily: 'inherit'
 };
 
-const textareaStyle = {
+const refinedSelectStyle = {
     width: '100%',
-    padding: '10px 12px',
-    marginBottom: '12px',
-    border: '1px solid #e2e8f0',
-    borderRadius: '8px',
-    minHeight: '80px',
+    padding: '12px 16px',
+    background: '#fff',
+    border: '2px solid #cbd5e1',
+    borderRadius: '12px',
     fontSize: '13px',
-    fontFamily: 'inherit',
+    fontWeight: '700',
     outline: 'none',
-    resize: 'vertical'
+    cursor: 'pointer',
+    marginBottom: '16px'
 };
 
 const cardStyle = {
-    background: '#fff',
     padding: '16px',
-    borderRadius: '12px',
-    marginBottom: '16px',
-    border: '1px solid #f1f5f9',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+    border: '1px solid #e2e8f0',
+    borderRadius: '16px',
+    background: '#f8fafc',
+    marginBottom: '12px'
+};
+
+const labelStyle = {
+    fontSize: '10px',
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    color: '#64748b',
+    marginBottom: '6px',
+    display: 'block',
+    letterSpacing: '0.05em'
 };
 
 const addBtnStyle = {
-    background: '#ecfdf5',
-    color: '#059669',
-    border: '1px solid #d1fae5',
-    padding: '8px 12px',
+    padding: '12px',
+    background: '#f0fdf4',
+    color: '#15803d',
+    border: '2px dashed #86efac',
+    borderRadius: '12px',
+    fontSize: '12px',
+    fontWeight: '800',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    width: '100%'
+};
+
+const deleteSmallBtnStyle = {
+    padding: '8px',
+    background: '#fff',
+    color: '#ef4444',
+    border: '1.5px solid #fee2e2',
     borderRadius: '8px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: '6px',
-    fontSize: '12px',
-    fontWeight: '600',
-    width: '100%',
-    justifyContent: 'center',
-    marginTop: '8px'
+    justifyContent: 'center'
 };
-
-const deleteBtnStyle = {
-    background: '#fff5f5',
-    color: '#e53e3e',
-    border: '1px solid #fed7d7',
-    padding: '6px 10px',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    fontSize: '11px',
-    fontWeight: '500'
-};
-
 export default Editor;

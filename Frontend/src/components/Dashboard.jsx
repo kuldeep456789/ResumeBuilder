@@ -1,8 +1,8 @@
 import React from 'react';
-import { Upload } from 'lucide-react';
+import { Upload, Trash2, Edit3, Calendar, FileText } from 'lucide-react';
 import './Dashboard.css';
 
-const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore }) => {
+const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore, savedResumes = [], onDelete, onLoad }) => {
     return (
         <div className="dashboard-wrapper">
             <div className="dashboard-container">
@@ -32,12 +32,11 @@ const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore }) => {
                         <span className="serif-italic-gold">Story.</span>
                     </h1>
                     <p className="description">
-                        You have 1 active draft and your profile is currently awaiting optimization check.
-                        A few more details and you're ready to impress.
+                        Create multiple professional resumes and track your ATS optimization in real-time.
                     </p>
                     <div className="button-group">
                         <button className="btn-continue" onClick={onEdit}>
-                            Continue Editing
+                            Continue Editing Draft
                         </button>
                         <button className="btn-new" onClick={onNew}>
                             New Resume
@@ -46,12 +45,81 @@ const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore }) => {
                             <Upload size={18} /> Upload Resume
                         </button>
                     </div>
+
+                    {/* Saved Resumes Section */}
+                    {savedResumes.length > 0 && (
+                        <div className="saved-resumes-section" style={{ marginTop: '50px' }}>
+                            <h3 style={{ color: 'white', fontSize: '1.2rem', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <FileText size={20} style={{ color: 'var(--gold-accent)' }} />
+                                My Saved Resumes
+                            </h3>
+                            <div className="saved-resumes-list" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                {savedResumes.map(resume => (
+                                    <div key={resume.id} style={{
+                                        background: 'rgba(255,255,255,0.05)',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        padding: '16px 20px',
+                                        borderRadius: '12px',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        transition: 'all 0.3s'
+                                    }}>
+                                        <div>
+                                            <h4 style={{ color: 'white', margin: '0 0 4px 0', fontSize: '1rem', fontWeight: 'bold' }}>{resume.title}</h4>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    <Calendar size={12} /> {new Date(resume.lastModified).toLocaleDateString()}
+                                                </span>
+                                                <span style={{ color: 'var(--gold-accent)', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
+                                                    ATS: {calculateSimpleATS(resume.data)}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <button 
+                                                onClick={() => onLoad(resume.data)}
+                                                style={{
+                                                    padding: '8px 16px',
+                                                    background: 'var(--gold-accent)',
+                                                    color: 'black',
+                                                    border: 'none',
+                                                    borderRadius: '8px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: '700',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px'
+                                                }}
+                                            >
+                                                <Edit3 size={14} /> Edit
+                                            </button>
+                                            <button 
+                                                onClick={() => onDelete(resume.id)}
+                                                style={{
+                                                    padding: '8px',
+                                                    background: 'rgba(239, 68, 68, 0.2)',
+                                                    color: '#ef4444',
+                                                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                                                    borderRadius: '8px',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Right Side: Floating Preview */}
                 <div className="dashboard-right">
                     <div className="preview-card-wrapper">
-                        <div className="active-badge">ACTIVE</div>
+                        <div className="active-badge">ACTIVE DRAFT</div>
                         <div className="preview-card">
                             <div className="card-line-gold"></div>
 
@@ -111,6 +179,16 @@ const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore }) => {
             </div>
         </div>
     );
+};
+
+// Simple calculator for the list view
+const calculateSimpleATS = (data) => {
+    let score = 50;
+    if (data.header?.name) score += 5;
+    if (data.skills?.categories?.length > 0) score += 15;
+    if (data.experience?.length > 0) score += 15;
+    if (data.projects?.length > 0) score += 15;
+    return Math.min(score, 100);
 };
 
 export default Dashboard;

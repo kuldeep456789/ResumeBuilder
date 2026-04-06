@@ -14,7 +14,8 @@ const TemplateSelectionModal = ({ isOpen, onClose, onSelect }) => {
                 </div>
 
                 <div className="template-options-grid">
-                    <div className="template-option" onClick={() => onSelect('standard')}>
+                    <div className="template-option recommended" onClick={() => onSelect('standard')}>
+                        <div className="popular-badge">RECOMMENDED</div>
                         <div className="template-thumbnail standard-thumb">
                             <div className="thumb-header"></div>
                             <div className="thumb-line"></div>
@@ -24,7 +25,8 @@ const TemplateSelectionModal = ({ isOpen, onClose, onSelect }) => {
                             <div className="thumb-line"></div>
                         </div>
                         <h3>Standard</h3>
-                        <p>A classic, reliable layout that works perfectly for any industry.</p>
+                        <p>The industry gold standard for clean, professional presentation.</p>
+                        <div className="select-hint">CHOOSE TEMPLATE</div>
                     </div>
 
                     <div className="template-option" onClick={() => onSelect('modern')}>
@@ -39,7 +41,8 @@ const TemplateSelectionModal = ({ isOpen, onClose, onSelect }) => {
                             </div>
                         </div>
                         <h3>Modern</h3>
-                        <p>Stand out with a sleek, vibrant header and distinct section dividers.</p>
+                        <p>A contemporary layout with bold headers and clear dividers.</p>
+                        <div className="select-hint">CHOOSE TEMPLATE</div>
                     </div>
 
                     <div className="template-option" onClick={() => onSelect('minimalist')}>
@@ -53,7 +56,8 @@ const TemplateSelectionModal = ({ isOpen, onClose, onSelect }) => {
                             </div>
                         </div>
                         <h3>Minimalist</h3>
-                        <p>Clean typography and strict alignment for a highly professional look.</p>
+                        <p>Perfect for experienced pros who value clarity and precision.</p>
+                        <div className="select-hint">CHOOSE TEMPLATE</div>
                     </div>
                 </div>
             </div>

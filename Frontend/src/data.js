@@ -1,4 +1,5 @@
 export const initialResumeState = {
+    targetRole: "",
     header: {
         name: "Kuldeep Prajapati",
         links: [
@@ -8,6 +9,7 @@ export const initialResumeState = {
             { label: "+91 82354 94985", url: "tel:+918235494985", type: "Mobile" },
         ],
     },
+    summary: "Aspiring Software Developer with a strong foundation in Python, JavaScript, and AI/ML. Experienced in backend development, LLM fine-tuning, and architecting scalable real-time communication platforms. Proven track record of optimizing performance and delivering innovative solutions in fast-paced environments.",
     skills: {
         categories: [
             { name: "Programming Languages", items: "Python, JavaScript, HTML/CSS, SQL" },
@@ -138,8 +140,9 @@ export const initialResumeState = {
         fontFamily: "'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     },
     sectionTitles: {
+        summary: "SUMMARY",
         skills: "SKILLS",
-        experience: "INTERNSHIP",
+        experience: "WORK EXPERIENCE",
         projects: "PROJECTS",
         certifications: "TRAINING",
         achievements: "ACHIEVEMENTS",

@@ -23,7 +23,7 @@ const ModernTemplate = React.forwardRef(({ data }, ref) => {
 
     const titles = sectionTitles || {
         skills: "SKILLS",
-        experience: "INTERNSHIP",
+        experience: "WORK EXPERIENCE",
         projects: "PROJECTS",
         certifications: "TRAINING",
         achievements: "ACHIEVEMENTS",
@@ -63,7 +63,7 @@ const ModernTemplate = React.forwardRef(({ data }, ref) => {
                     </div>
                 )}
 
-                {/* INTERNSHIP */}
+                {/* WORK EXPERIENCE */}
                 {experience.length > 0 && (
                     <div className="section modern-section">
                         <div className="modern-section-title">{titles.experience}</div>

@@ -45,6 +45,22 @@
     margin-bottom: 18px;
 }
 
+.minimalist-summary-section {
+    margin-bottom: 12px;
+}
+
+.minimalist-summary-text {
+    margin: 0;
+    font-size: 10.5pt;
+    line-height: 1.4;
+    color: #444;
+    text-align: justify;
+}
+
+.education-section {
+    margin-top: -4px; /* Reduced gap from header/summary */
+}
+
 .minimalist-section-title {
     font-size: 11pt;
     font-weight: 800;

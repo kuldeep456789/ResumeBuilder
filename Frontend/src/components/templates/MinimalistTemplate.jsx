@@ -3,7 +3,7 @@ import '../Resume.css';
 import './MinimalistTemplate.css';
 
 const MinimalistTemplate = React.forwardRef(({ data }, ref) => {
-    const { header, skills, experience, projects, certifications, achievements, education, settings, sectionTitles } = data;
+    const { header, summary, skills, experience, projects, certifications, achievements, education, settings, sectionTitles } = data;
 
     const sanitizeUrl = (url) => {
         if (!url) return "#";
@@ -20,7 +20,7 @@ const MinimalistTemplate = React.forwardRef(({ data }, ref) => {
 
     const titles = sectionTitles || {
         skills: "SKILLS",
-        experience: "INTERNSHIP",
+        experience: "WORK EXPERIENCE",
         projects: "PROJECTS",
         certifications: "TRAINING",
         achievements: "ACHIEVEMENTS",
@@ -44,10 +44,20 @@ const MinimalistTemplate = React.forwardRef(({ data }, ref) => {
                 </div>
             </div>
 
+            {/* SUMMARY */}
+            {summary && (
+                <div className="minimalist-section minimalist-summary-section">
+                    <div className="minimalist-section-title">{titles.summary}</div>
+                    <div className="minimalist-section-content">
+                        <p className="minimalist-summary-text">{summary}</p>
+                    </div>
+                </div>
+            )}
+
             <div className="minimalist-content">
                 {/* EDUCATION */}
                 {education.length > 0 && (
-                    <div className="minimalist-section">
+                    <div className="minimalist-section education-section">
                         <div className="minimalist-section-title">{titles.education}</div>
                         <div className="minimalist-section-content">
                             {education.map((edu, i) => (

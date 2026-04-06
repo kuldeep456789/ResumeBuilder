@@ -100,10 +100,19 @@ export const calculateATSScore = (resumeDataOrText, jobDescription = "") => {
         if (rawContent.includes(kw) || structuralText.includes(kw)) matchCount++;
     });
 
+    const missingKeywords = referenceKeywords.filter(kw => 
+        !rawContent.includes(kw.toLowerCase()) && !structuralText.includes(kw.toLowerCase())
+    ).map(kw => {
+        // Capitalize for display
+        return kw.charAt(0).toUpperCase() + kw.slice(1);
+    });
+
     score.sections.skills = Math.min(100, Math.round((matchCount / referenceKeywords.length) * 100));
+    score.missingKeywords = missingKeywords.slice(0, 8); // Keep top 8 missing
+
     if (score.sections.skills < 70) {
-        const missing = GOLD_STANDARD.keywords.filter(k => !rawContent.includes(k.toLowerCase()) && !structuralText.includes(k.toLowerCase())).slice(0, 3).join(', ');
-        if (missing) score.feedback.push(`Keywords Gap: Missing high-impact terms like ${missing}.`);
+        const missingStr = missingKeywords.slice(0, 3).join(', ');
+        if (missingStr) score.feedback.push(`Keywords Gap: Missing high-impact terms like ${missingStr}.`);
     }
 
     // 2. Formatting & Contact (Weight: 15%)

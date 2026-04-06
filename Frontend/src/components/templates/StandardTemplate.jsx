@@ -22,7 +22,7 @@ const StandardTemplate = React.forwardRef(({ data }, ref) => {
 
     const titles = sectionTitles || {
         skills: "SKILLS",
-        experience: "INTERNSHIP",
+        experience: "WORK EXPERIENCE",
         projects: "PROJECTS",
         certifications: "TRAINING",
         achievements: "ACHIEVEMENTS",
@@ -68,7 +68,7 @@ const StandardTemplate = React.forwardRef(({ data }, ref) => {
                 </div>
             </div>
 
-            {/* INTERNSHIP */}
+            {/* WORK EXPERIENCE */}
             <div className="section">
                 <div className="section-title">{titles.experience}</div>
                 <div className="section-content">
