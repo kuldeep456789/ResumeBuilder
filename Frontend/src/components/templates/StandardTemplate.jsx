@@ -154,18 +154,18 @@ const StandardTemplate = React.forwardRef(({ data }, ref) => {
             </div>
 
             {/* EDUCATION */}
-            <div className="section">
+            <div className="section education-section">
                 <div className="section-title">{titles.education}</div>
                 <div className="section-content">
                     {education.map((edu, i) => (
                         <div className="education-item" key={i}>
                             <div className="education-header">
                                 <span className="institution">{edu.institution}</span>
-                                <span className="location">{edu.location}</span>
-                            </div>
-                            <div className="education-header">
-                                <span className="degree">{edu.degree}</span>
                                 <span className="item-date">{edu.date}</span>
+                            </div>
+                            <div className="education-header education-subheader">
+                                <span className="degree">{edu.degree}</span>
+                                <span className="location">{edu.location}</span>
                             </div>
                         </div>
                     ))}

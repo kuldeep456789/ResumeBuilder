@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Type, Palette, Save, Download, Plus, Trash2, ChevronDown, ChevronUp, RotateCcw, Target, ShieldCheck, Zap } from 'lucide-react';
-import ATSScoreCard from './ATSScoreCard';
+import ATSCategoryBreakdownCard from './ATSCategoryBreakdownCard';
 
 const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheckATS, isScanning }) => {
     const [activeSection, setActiveSection] = useState('header');
@@ -148,6 +148,16 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                     </div>
                 </div>
             </div>
+
+            <ATSCategoryBreakdownCard
+                atsScore={atsScore}
+                targetRole={data.targetRole}
+                isScanning={isScanning}
+                onCheckATS={onCheckATS}
+                onSave={onSave}
+                onDownload={onDownload}
+                defaultTitle={data?.header?.name}
+            />
 
             {/* Input Sections */}
             <div className="editor-sections">

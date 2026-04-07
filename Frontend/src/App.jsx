@@ -4,12 +4,12 @@ import { initialResumeState } from './data';
 import Resume from './components/Resume';
 import Dashboard from './components/Dashboard';
 import Editor from './components/Editor';
-import EditorFooter from './components/EditorFooter';
 import ResumeUploadModal from './components/ResumeUploadModal';
 import TemplateSelectionModal from './components/TemplateSelectionModal';
 import { calculateATSScore } from './services/ats/atsEngine';
 import ErrorBoundary from './components/ErrorBoundary';
 import './components/Resume.css';
+import './App.css';
 
 function App() {
   return (
@@ -61,6 +61,7 @@ function MainApp() {
 
   const [isScanning, setIsScanning] = useState(false);
   const [atsScore, setAtsScore] = useState(() => calculateATSScore(data));
+  const [editorAccentColor, setEditorAccentColor] = useState(() => data?.settings?.themeColor || '#004AAD');
 
   const handleCheckATS = () => {
     setIsScanning(true);
@@ -72,21 +73,6 @@ function MainApp() {
     }, 2500);
   };
 
-  const handleAddSkill = (skill) => {
-    setData(prev => {
-        const firstCategory = prev.skills.categories[0];
-        if (firstCategory) {
-            const newCategories = [...prev.skills.categories];
-            newCategories[0] = {
-                ...firstCategory,
-                items: firstCategory.items ? `${firstCategory.items}, ${skill}` : skill
-            };
-            return { ...prev, skills: { ...prev.skills, categories: newCategories } };
-        }
-        return prev;
-    });
-  };
-
   React.useEffect(() => {
     localStorage.setItem('resumeData', JSON.stringify(data));
     setLastSaved(new Date().toLocaleTimeString());
@@ -96,6 +82,13 @@ function MainApp() {
   React.useEffect(() => {
     localStorage.setItem('savedResumesList', JSON.stringify(savedResumes));
   }, [savedResumes]);
+
+  React.useEffect(() => {
+    const currentThemeColor = data?.settings?.themeColor || '#004AAD';
+    if (currentThemeColor !== editorAccentColor) {
+      setEditorAccentColor(currentThemeColor);
+    }
+  }, [data?.settings?.themeColor, editorAccentColor]);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobileView(getIsMobileViewport());
@@ -151,7 +144,31 @@ function MainApp() {
 
   const handleLoadResume = (resumeData) => {
     setData(resumeData);
+    setEditorAccentColor(resumeData?.settings?.themeColor || '#004AAD');
     setView('editor');
+  };
+
+  const handleBackToPrevious = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    setView('dashboard');
+  };
+
+  const handleGoToMainPage = () => {
+    setView('dashboard');
+  };
+
+  const handleAccentColorChange = (nextColor) => {
+    setEditorAccentColor(nextColor);
+    setData(prev => ({
+      ...prev,
+      settings: {
+        ...(prev.settings || {}),
+        themeColor: nextColor
+      }
+    }));
   };
 
   const resumeRef = useRef();
@@ -191,13 +208,15 @@ function MainApp() {
           isOpen={isTemplateModalOpen}
           onClose={() => setIsTemplateModalOpen(false)}
           onSelect={(templateId) => {
-            setData({
+            const nextData = {
               ...initialResumeState,
               settings: {
                 ...initialResumeState.settings,
                 template: templateId
               }
-            });
+            };
+            setData(nextData);
+            setEditorAccentColor(nextData.settings.themeColor || '#004AAD');
             setIsTemplateModalOpen(false);
             setView('editor');
           }}
@@ -207,87 +226,58 @@ function MainApp() {
   }
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column',
-      minHeight: '100vh',
-      height: '100dvh',
-      background: '#f8fafc',
-      overflow: isMobileView ? 'auto' : 'hidden'
-    }}>
+    <div className="editor-app-shell" style={{ '--editor-accent': editorAccentColor }}>
       <style>{scannerStyle}</style>
-      
-      {/* Top Header */}
-      <div style={{
-        minHeight: '64px',
-        background: '#fff',
-        borderBottom: '1px solid #e2e8f0',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px',
-        flexWrap: isMobileView ? 'wrap' : 'nowrap',
-        padding: isMobileView ? '10px 14px' : '0 24px',
-        zIndex: 100
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ 
-            width: '32px', 
-            height: '32px', 
-            background: '#1a202c', 
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-             <span style={{ color: '#fff', fontSize: '18px', fontWeight: '900' }}>R</span>
-          </div>
-          <h2 style={{ fontSize: isMobileView ? '0.95rem' : '1.1rem', fontWeight: '800', color: '#1a202c', margin: 0 }}>Editor <span style={{ color: '#004AAD' }}>Workplace</span></h2>
-        </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: 'auto' }}>
-          <span style={{ display: isMobileView ? 'none' : 'inline', fontSize: '11px', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Last Sync: {lastSaved}
+      <header className="editor-topbar">
+        <button
+          type="button"
+          className="editor-topbar-left editor-home-trigger"
+          onClick={handleGoToMainPage}
+          aria-label="Go to main page"
+          title="Go to main page"
+        >
+          <div className="editor-brand-icon">
+            <span>R</span>
+          </div>
+          <div className="editor-brand-copy">
+            <p>Resume Studio</p>
+            <h2>Professional Editor Workspace</h2>
+          </div>
+        </button>
+
+        <div className="editor-topbar-right">
+          <span className="editor-last-sync">
+            Last Sync: {lastSaved || "Not yet"}
           </span>
+          <div className="editor-color-control">
+            <label htmlFor="accentColorPicker" className="editor-color-label">Color</label>
+            <input
+              id="accentColorPicker"
+              type="color"
+              value={editorAccentColor}
+              onChange={(e) => handleAccentColorChange(e.target.value)}
+              className="editor-color-input"
+            />
+          </div>
           <button
-            onClick={() => setView('dashboard')}
-            style={{
-              padding: isMobileView ? '7px 12px' : '8px 16px',
-              fontSize: '12px',
-              background: '#f1f5f9',
-              color: '#475569',
-              border: '1.5px solid #e2e8f0',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontWeight: '700',
-              transition: 'all 0.2s'
-            }}
-            onMouseOver={(e) => { e.target.style.background = '#e2e8f0'; e.target.style.borderColor = '#cbd5e1'; }}
-            onMouseOut={(e) => { e.target.style.background = '#f1f5f9'; e.target.style.borderColor = '#e2e8f0'; }}
+            onClick={handleBackToPrevious}
+            className="topbar-exit-btn"
           >
-            ← Exit to Dashboard
+            Back
           </button>
         </div>
-      </div>
+      </header>
 
-      {/* Main Content Area */}
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: isMobileView ? 'column' : 'row',
-        flex: 1, 
-        overflow: isMobileView ? 'auto' : 'hidden',
-        paddingBottom: isMobileView ? '132px' : '80px' // Space for fixed footer
-      }}>
-        {/* Editor Sidebar */}
-        <div style={{ 
-          width: isMobileView ? '100%' : '450px',
-          maxHeight: isMobileView ? 'none' : '100%',
-          borderRight: isMobileView ? 'none' : '1px solid #e2e8f0',
-          borderBottom: isMobileView ? '1px solid #e2e8f0' : 'none',
-          background: '#fff',
-          overflowY: 'auto',
-          flexShrink: 0
-        }}>
+      <div
+        className="editor-main-area"
+        style={{ paddingBottom: isMobileView ? '18px' : '22px' }}
+      >
+        <aside className="editor-left-panel">
+          <div className="left-panel-header">
+            <h3>Editor Section</h3>
+            <p>Build ATS-focused content on the left, see real output on the right.</p>
+          </div>
           <Editor
             data={data}
             atsScore={atsScore}
@@ -302,50 +292,20 @@ function MainApp() {
               }
             }}
           />
-        </div>
+        </aside>
 
-        {/* Live Preview Area */}
-        <div style={{ 
-          flex: 1, 
-          background: '#cbd5e1',
-          minHeight: isMobileView ? 'auto' : 0,
-          padding: isMobileView ? '16px 12px 24px' : '40px',
-          display: 'flex', 
-          justifyContent: 'center', 
-          overflowY: 'auto',
-          overflowX: 'hidden'
-        }}>
-           <div style={{ 
-             maxWidth: isMobileView ? '100%' : '850px',
-             width: '100%',
-             boxShadow: '0 25px 60px -12px rgba(0,0,0,0.2)',
-             borderRadius: isMobileView ? '10px' : '2px',
-             background: 'white',
-             position: 'relative',
-             height: 'fit-content'
-           }}>
-             {isScanning && (
-                <>
-                    <div className="scanner-line"></div>
-                    <div className="scanner-overlay"></div>
-                </>
-             )}
-             <Resume data={data} ref={resumeRef} />
-           </div>
-        </div>
+        <section className="editor-right-panel">
+          <div className={`preview-frame ${isMobileView ? 'mobile' : ''}`}>
+            {isScanning && (
+              <>
+                <div className="scanner-line"></div>
+                <div className="scanner-overlay"></div>
+              </>
+            )}
+            <Resume data={data} ref={resumeRef} />
+          </div>
+        </section>
       </div>
-
-      {/* Persistence & Strategy Footer */}
-      <EditorFooter 
-        isMobileView={isMobileView}
-        atsScore={atsScore} 
-        onSave={handleSaveResume} 
-        onDownload={handlePrint} 
-        data={data}
-        onAddSkill={handleAddSkill}
-        onCheckATS={handleCheckATS}
-        isScanning={isScanning}
-      />
     </div>
   );
 }

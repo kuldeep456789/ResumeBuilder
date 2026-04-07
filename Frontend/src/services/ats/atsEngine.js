@@ -16,6 +16,21 @@ export const GOLD_STANDARD = {
     }
 };
 
+const TECH_STACK_KEYWORDS = [
+    "React",
+    "JavaScript",
+    "TypeScript",
+    "Node.js",
+    "Express",
+    "Python",
+    "SQL",
+    "PostgreSQL",
+    "Git",
+    "AWS",
+    "CI/CD",
+    "Testing",
+];
+
 export const parseResumeFromText = (text) => {
     const lines = text.split('\n');
     let resumeData = {
@@ -79,6 +94,7 @@ export const calculateATSScore = (resumeDataOrText, jobDescription = "") => {
         sections: {
             skills: 0,
             experience: 0,
+            projects: 0,
             formatting: 0,
             headers: 0
         },
@@ -109,6 +125,10 @@ export const calculateATSScore = (resumeDataOrText, jobDescription = "") => {
 
     score.sections.skills = Math.min(100, Math.round((matchCount / referenceKeywords.length) * 100));
     score.missingKeywords = missingKeywords.slice(0, 8); // Keep top 8 missing
+    score.missingTechStack = TECH_STACK_KEYWORDS.filter((keyword) => {
+        const lowerKeyword = keyword.toLowerCase();
+        return !rawContent.includes(lowerKeyword) && !structuralText.includes(lowerKeyword);
+    }).slice(0, 8);
 
     if (score.sections.skills < 70) {
         const missingStr = missingKeywords.slice(0, 3).join(', ');
@@ -173,13 +193,66 @@ export const calculateATSScore = (resumeDataOrText, jobDescription = "") => {
     }
     score.sections.experience = expScore;
 
-    // 5. Overall Weighted Total
+    // 5. Projects Quality (Used for performance panel)
+    const projects = Array.isArray(resumeData.projects) ? resumeData.projects : [];
+    let projectsScore = 0;
+
+    if (projects.length > 0) {
+        const projectQuality = projects.reduce((sum, project) => {
+            const hasTitle = Boolean(project?.title?.trim());
+            const hasTechStack = Boolean(project?.techStack?.trim());
+            const descriptionItems = Array.isArray(project?.description) ? project.description.filter(Boolean) : [];
+            const hasDetailedBullets = descriptionItems.length >= 2;
+            const hasImpactMetric = descriptionItems.some((line) =>
+                /\d+[%$]|million|billion|thousand|\d+\+|\d+ (users|clients|projects|months|years)/i.test(line || "")
+            );
+            const hasLink = Array.isArray(project?.links) && project.links.some((link) => Boolean(link?.url));
+
+            let quality = 0;
+            if (hasTitle) quality += 0.2;
+            if (hasTechStack) quality += 0.25;
+            if (hasDetailedBullets) quality += 0.25;
+            if (hasImpactMetric) quality += 0.2;
+            if (hasLink) quality += 0.1;
+            return sum + quality;
+        }, 0);
+
+        projectsScore = Math.round((projectQuality / projects.length) * 100);
+    } else {
+        score.feedback.push("Projects Gap: Add at least 1 strong project with tech stack and impact.");
+    }
+
+    score.sections.projects = projectsScore;
+    if (projectsScore > 0 && projectsScore < 70) {
+        score.feedback.push("Projects Tip: Add measurable results and clear tech stack in project bullets.");
+    }
+
+    // 6. Overall Weighted Total
     score.overall = Math.round(
-        score.sections.skills * 0.30 +
-        score.sections.experience * 0.40 +
-        score.sections.formatting * 0.15 +
-        score.sections.headers * 0.15
+        score.sections.skills * 0.26 +
+        score.sections.experience * 0.34 +
+        score.sections.projects * 0.20 +
+        score.sections.formatting * 0.10 +
+        score.sections.headers * 0.10
     );
+
+    const weightedBreakdown = [
+        { name: "Skills", value: score.sections.skills * 0.30 },
+        { name: "Work Experience", value: score.sections.experience * 0.38 },
+        { name: "Projects", value: score.sections.projects * 0.22 },
+        { name: "Structure", value: score.sections.headers * 0.10 },
+    ];
+
+    const weightedTotal = weightedBreakdown.reduce((sum, entry) => sum + entry.value, 0) || 1;
+    score.categoryBreakdown = weightedBreakdown.map((entry) => ({
+        name: entry.name,
+        value: Math.max(0, Math.round((entry.value / weightedTotal) * 100)),
+    }));
+
+    const roundedTotal = score.categoryBreakdown.reduce((sum, entry) => sum + entry.value, 0);
+    if (roundedTotal !== 100 && score.categoryBreakdown.length > 0) {
+        score.categoryBreakdown[0].value += (100 - roundedTotal);
+    }
 
     return score;
 };

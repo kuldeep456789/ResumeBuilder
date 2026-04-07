@@ -32,6 +32,7 @@ body {
     padding: 20px 50px;
     /* Original padding */
     background: var(--paper-bg);
+    color: var(--text-color);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -112,6 +113,7 @@ body {
 .section-content {
     font-size: 12px;
     margin-left: 0;
+    color: var(--text-color);
 }
 
 /* Skills */
@@ -121,6 +123,7 @@ body {
 
 .skill-list li {
     margin-bottom: 4px;
+    color: var(--text-color);
 }
 
 .skill-category strong {
@@ -175,6 +178,7 @@ body {
     padding-left: 15px;
     position: relative;
     line-height: 1.2;
+    color: var(--text-color);
 }
 
 .item-description li::before,
@@ -192,6 +196,7 @@ body {
 
 .certificates-list li {
     margin-bottom: 4px;
+    color: var(--text-color);
 }
 
 .certificates-list li strong {
@@ -209,6 +214,7 @@ body {
     margin-bottom: 3px;
     padding-left: 15px;
     position: relative;
+    color: var(--text-color);
 }
 
 .achievements-list li strong {
@@ -218,30 +224,51 @@ body {
 }
 
 /* Education */
+.education-section .section-content {
+    display: grid;
+    gap: 4px;
+}
+
 .education-item {
-    margin-bottom: 7px;
+    margin-bottom: 2px;
+    padding-bottom: 2px;
+}
+
+.education-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .education-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 1px;
+    gap: 14px;
+    margin-bottom: 0;
 }
 
 .institution {
-    font-weight: normal;
+    font-weight: 700;
     font-size: 11pt;
-    color: var(--theme-color);
+    color: var(--text-color);
+    letter-spacing: 0.1px;
 }
 
-.location {
-    font-size: 12px;
+.education-header .item-date,
+.education-header .location {
+    font-size: 11.2px;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.education-subheader {
+    margin-top: 0;
 }
 
 .degree {
-    font-size: 12px;
-    margin-top: 2px;
+    font-size: 11.5px;
+    color: #4b5563;
+    font-style: italic;
 }
 
 @media screen and (max-width: 900px) {
