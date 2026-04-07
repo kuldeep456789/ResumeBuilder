@@ -9,14 +9,17 @@
 }
 
 .dashboard-wrapper {
-    height: 100vh;
-    width: 100vw;
+    min-height: 100dvh;
+    width: 100%;
     background-color: var(--dark-bg);
     color: var(--text-primary);
     font-family: 'Plus Jakarta Sans', sans-serif;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .dashboard-container {
@@ -33,6 +36,13 @@
 .dashboard-left {
     flex: 1;
     padding-right: 60px;
+}
+
+.brand-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
 }
 
 .workspace-label {
@@ -62,6 +72,38 @@
     line-height: 1.6;
     max-width: 450px;
     margin-bottom: 48px;
+}
+
+.saved-resumes-section {
+    margin-top: 50px;
+}
+
+.saved-resumes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.saved-resume-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.saved-resume-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.saved-resume-actions {
+    display: flex;
+    gap: 10px;
 }
 
 .button-group {
@@ -165,6 +207,12 @@
     padding: 30px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
     border-radius: 4px;
+}
+
+.preview-score-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
 }
 
 .card-line-gold {
@@ -301,14 +349,13 @@
     .dashboard-wrapper {
         height: auto;
         min-height: 100dvh;
-        overflow-y: auto;
     }
 
     .dashboard-container {
         flex-direction: column;
         align-items: stretch;
         gap: 28px;
-        padding: 32px 20px;
+        padding: 26px 18px 38px;
     }
 
     .dashboard-left {
@@ -343,21 +390,21 @@
         max-width: 100%;
     }
 
-    .saved-resumes-list > div {
-        flex-direction: column !important;
-        align-items: flex-start !important;
+    .saved-resume-card {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 12px;
     }
 }
 
 @media (max-width: 640px) {
     .dashboard-container {
-        padding: 20px 14px;
-        gap: 22px;
+        padding: 18px 12px 30px;
+        gap: 18px;
     }
 
-    .workspace-label {
-        margin-bottom: 14px;
+    .brand-strip {
+        margin-bottom: 24px;
     }
 
     .button-group {
@@ -374,9 +421,85 @@
         font-size: 0.9rem;
     }
 
+    .main-title {
+        font-size: clamp(2.25rem, 11vw, 3.2rem);
+        line-height: 1.04;
+        margin-bottom: 14px;
+    }
+
+    .description {
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+
+    .saved-resumes-section {
+        margin-top: 28px;
+    }
+
+    .saved-resume-card {
+        padding: 14px 12px;
+    }
+
+    .saved-resume-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .saved-resume-actions {
+        width: 100%;
+    }
+
+    .saved-resume-actions button {
+        flex: 1;
+        justify-content: center;
+    }
+
     .preview-card {
-        padding: 22px;
+        width: 100%;
+        padding: 20px;
         height: auto;
-        min-height: 360px;
+        min-height: 340px;
+        border-radius: 10px;
+    }
+
+    .active-badge {
+        top: -8px;
+        right: 8px;
+    }
+
+    .preview-score-badge {
+        top: 12px;
+        right: 12px;
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-container {
+        padding: 14px 10px 24px;
+    }
+
+    .brand-strip {
+        margin-bottom: 18px;
+    }
+
+    .main-title {
+        font-size: clamp(2rem, 10vw, 2.6rem);
+    }
+
+    .description {
+        font-size: 0.95rem;
+    }
+
+    .btn-continue,
+    .btn-new,
+    .btn-upload {
+        font-size: 0.84rem;
+        padding: 13px 14px;
+    }
+
+    .preview-card {
+        min-height: 310px;
+        padding: 18px;
     }
 }

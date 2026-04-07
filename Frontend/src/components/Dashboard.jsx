@@ -8,7 +8,7 @@ const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore, savedRe
             <div className="dashboard-container">
                 {/* Left Side: Text & Actions */}
                 <div className="dashboard-left">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '40px' }}>
+                    <div className="brand-strip">
                         <div style={{
                             width: '32px',
                             height: '32px',
@@ -48,26 +48,17 @@ const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore, savedRe
 
                     {/* Saved Resumes Section */}
                     {savedResumes.length > 0 && (
-                        <div className="saved-resumes-section" style={{ marginTop: '50px' }}>
+                        <div className="saved-resumes-section">
                             <h3 style={{ color: 'white', fontSize: '1.2rem', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <FileText size={20} style={{ color: 'var(--gold-accent)' }} />
                                 My Saved Resumes
                             </h3>
-                            <div className="saved-resumes-list" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            <div className="saved-resumes-list">
                                 {savedResumes.map(resume => (
-                                    <div key={resume.id} style={{
-                                        background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        padding: '16px 20px',
-                                        borderRadius: '12px',
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        transition: 'all 0.3s'
-                                    }}>
+                                    <div key={resume.id} className="saved-resume-card">
                                         <div>
                                             <h4 style={{ color: 'white', margin: '0 0 4px 0', fontSize: '1rem', fontWeight: 'bold' }}>{resume.title}</h4>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <div className="saved-resume-meta">
                                                 <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                     <Calendar size={12} /> {new Date(resume.lastModified).toLocaleDateString()}
                                                 </span>
@@ -76,7 +67,7 @@ const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore, savedRe
                                                 </span>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                        <div className="saved-resume-actions">
                                             <button 
                                                 onClick={() => onLoad(resume.data)}
                                                 style={{
@@ -137,7 +128,7 @@ const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore, savedRe
                                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                                 border: '1px solid #f1f5f9',
                                 zIndex: 10
-                            }}>
+                            }} className="preview-score-badge">
                                 <div style={{
                                     width: '8px',
                                     height: '8px',
