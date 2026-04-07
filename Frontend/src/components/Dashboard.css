@@ -296,3 +296,87 @@
     font-weight: 300;
     color: var(--text-primary);
 }
+
+@media (max-width: 1100px) {
+    .dashboard-wrapper {
+        height: auto;
+        min-height: 100dvh;
+        overflow-y: auto;
+    }
+
+    .dashboard-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 28px;
+        padding: 32px 20px;
+    }
+
+    .dashboard-left {
+        padding-right: 0;
+    }
+
+    .main-title {
+        font-size: clamp(2.4rem, 7vw, 4rem);
+        margin-bottom: 20px;
+    }
+
+    .description {
+        max-width: 100%;
+        margin-bottom: 28px;
+    }
+
+    .button-group {
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .dashboard-right {
+        justify-content: center;
+    }
+
+    .preview-card-wrapper {
+        transform: none;
+    }
+
+    .preview-card {
+        width: min(100%, 420px);
+        max-width: 100%;
+    }
+
+    .saved-resumes-list > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard-container {
+        padding: 20px 14px;
+        gap: 22px;
+    }
+
+    .workspace-label {
+        margin-bottom: 14px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-continue,
+    .btn-new,
+    .btn-upload {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 16px;
+        font-size: 0.9rem;
+    }
+
+    .preview-card {
+        padding: 22px;
+        height: auto;
+        min-height: 360px;
+    }
+}

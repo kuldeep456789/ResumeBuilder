@@ -20,7 +20,9 @@ function App() {
 }
 
 function MainApp() {
+  const getIsMobileViewport = () => window.innerWidth <= 900;
   const [view, setView] = useState('dashboard'); // 'dashboard' or 'editor'
+  const [isMobileView, setIsMobileView] = useState(getIsMobileViewport);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
@@ -94,6 +96,12 @@ function MainApp() {
   React.useEffect(() => {
     localStorage.setItem('savedResumesList', JSON.stringify(savedResumes));
   }, [savedResumes]);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobileView(getIsMobileViewport());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Scanner Animation Style
   const scannerStyle = `
@@ -202,21 +210,24 @@ function MainApp() {
     <div style={{ 
       display: 'flex', 
       flexDirection: 'column',
-      height: '100vh',
+      minHeight: '100vh',
+      height: '100dvh',
       background: '#f8fafc',
-      overflow: 'hidden'
+      overflow: isMobileView ? 'auto' : 'hidden'
     }}>
       <style>{scannerStyle}</style>
       
       {/* Top Header */}
       <div style={{
-        height: '64px',
+        minHeight: '64px',
         background: '#fff',
         borderBottom: '1px solid #e2e8f0',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 24px',
+        gap: '12px',
+        flexWrap: isMobileView ? 'wrap' : 'nowrap',
+        padding: isMobileView ? '10px 14px' : '0 24px',
         zIndex: 100
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -231,17 +242,17 @@ function MainApp() {
           }}>
              <span style={{ color: '#fff', fontSize: '18px', fontWeight: '900' }}>R</span>
           </div>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#1a202c', margin: 0 }}>Editor <span style={{ color: '#004AAD' }}>Workplace</span></h2>
+          <h2 style={{ fontSize: isMobileView ? '0.95rem' : '1.1rem', fontWeight: '800', color: '#1a202c', margin: 0 }}>Editor <span style={{ color: '#004AAD' }}>Workplace</span></h2>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: 'auto' }}>
+          <span style={{ display: isMobileView ? 'none' : 'inline', fontSize: '11px', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Last Sync: {lastSaved}
           </span>
           <button
             onClick={() => setView('dashboard')}
             style={{
-              padding: '8px 16px',
+              padding: isMobileView ? '7px 12px' : '8px 16px',
               fontSize: '12px',
               background: '#f1f5f9',
               color: '#475569',
@@ -262,17 +273,20 @@ function MainApp() {
       {/* Main Content Area */}
       <div style={{ 
         display: 'flex', 
+        flexDirection: isMobileView ? 'column' : 'row',
         flex: 1, 
-        overflow: 'hidden',
-        paddingBottom: '80px' // Space for footer
+        overflow: isMobileView ? 'auto' : 'hidden',
+        paddingBottom: isMobileView ? '132px' : '80px' // Space for fixed footer
       }}>
         {/* Editor Sidebar */}
         <div style={{ 
-          width: '450px', 
-          height: '100%', 
-          borderRight: '1px solid #e2e8f0',
+          width: isMobileView ? '100%' : '450px',
+          maxHeight: isMobileView ? 'none' : '100%',
+          borderRight: isMobileView ? 'none' : '1px solid #e2e8f0',
+          borderBottom: isMobileView ? '1px solid #e2e8f0' : 'none',
           background: '#fff',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          flexShrink: 0
         }}>
           <Editor
             data={data}
@@ -293,17 +307,19 @@ function MainApp() {
         {/* Live Preview Area */}
         <div style={{ 
           flex: 1, 
-          background: '#cbd5e1', 
-          padding: '40px', 
+          background: '#cbd5e1',
+          minHeight: isMobileView ? 'auto' : 0,
+          padding: isMobileView ? '16px 12px 24px' : '40px',
           display: 'flex', 
           justifyContent: 'center', 
-          overflowY: 'auto' 
+          overflowY: 'auto',
+          overflowX: 'hidden'
         }}>
            <div style={{ 
-             maxWidth: '850px',
+             maxWidth: isMobileView ? '100%' : '850px',
              width: '100%',
              boxShadow: '0 25px 60px -12px rgba(0,0,0,0.2)',
-             borderRadius: '2px',
+             borderRadius: isMobileView ? '10px' : '2px',
              background: 'white',
              position: 'relative',
              height: 'fit-content'
@@ -321,6 +337,7 @@ function MainApp() {
 
       {/* Persistence & Strategy Footer */}
       <EditorFooter 
+        isMobileView={isMobileView}
         atsScore={atsScore} 
         onSave={handleSaveResume} 
         onDownload={handlePrint} 
