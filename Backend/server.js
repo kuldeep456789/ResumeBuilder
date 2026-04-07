@@ -49,10 +49,13 @@ app.post('/api/analyze', async (req, res) => {
 
 const HOST = '0.0.0.0';
 
-app.listen(PORT, HOST, () => {
-    console.log(`Server running on http://${HOST}:${PORT}`);
-    console.log(`Available Providers:`, getAvailableProviders());
-});
+// When running locally start an HTTP server; in serverless (Vercel) we just export the Express handler.
+if (require.main === module) {
+    app.listen(PORT, HOST, () => {
+        console.log(`Server running on http://${HOST}:${PORT}`);
+        console.log(`Available Providers:`, getAvailableProviders());
+    });
+}
 
 // Handle unhandled rejections and exceptions to prevent the server from exiting silently
 process.on('unhandledRejection', (reason, promise) => {
@@ -62,3 +65,5 @@ process.on('unhandledRejection', (reason, promise) => {
 process.on('uncaughtException', (err) => {
     console.error('Uncaught Exception:', err);
 });
+
+module.exports = app;
