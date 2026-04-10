@@ -2,12 +2,23 @@ import React from 'react';
 import { Upload, Trash2, Edit3, Calendar, FileText } from 'lucide-react';
 import './Dashboard.css';
 
-const Dashboard = ({ onEdit, onNew, onUpload, lastSaved, data, atsScore, savedResumes = [], onDelete, onLoad }) => {
+const Dashboard = ({ user, onLogout, onEdit, onNew, onUpload, data, atsScore, savedResumes = [], onDelete, onLoad }) => {
+    const displayName = user?.fullName || user?.email || user?.phone || 'User';
+
     return (
         <div className="dashboard-wrapper">
             <div className="dashboard-container">
                 {/* Left Side: Text & Actions */}
                 <div className="dashboard-left">
+                    <div className="dashboard-account-bar">
+                        <div className="dashboard-user-chip" title={displayName}>
+                            Signed in as {displayName}
+                        </div>
+                        <button type="button" className="dashboard-logout-btn" onClick={onLogout}>
+                            Logout
+                        </button>
+                    </div>
+
                     <div className="brand-strip">
                         <div style={{
                             width: '32px',

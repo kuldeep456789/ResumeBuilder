@@ -5,6 +5,37 @@
   padding: 0;
 }
 
+.auth-loading-screen {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  gap: 0.8rem;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(239, 194, 103, 0.2), transparent 35%),
+    radial-gradient(circle at 90% 0%, rgba(54, 137, 188, 0.22), transparent 30%),
+    linear-gradient(155deg, #0b1220, #111827);
+  color: #e8f1ff;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+}
+
+.auth-loading-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(255, 255, 255, 0.22);
+  border-top-color: #efc16d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .editor-app-shell {
   --editor-accent: #0f67da;
   min-height: 100dvh;
@@ -165,6 +196,21 @@
   white-space: nowrap;
 }
 
+.editor-user-pill {
+  max-width: 180px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 1px solid rgba(130, 174, 218, 0.4);
+  border-radius: 999px;
+  padding: 0.32rem 0.6rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #cae3ff;
+  background: rgba(8, 24, 42, 0.75);
+}
+
 .topbar-action,
 .topbar-exit-btn {
   border: 1px solid transparent;
@@ -190,6 +236,23 @@
 .topbar-exit-btn {
   background: var(--editor-accent);
   border-color: var(--editor-accent);
+}
+
+.topbar-logout-btn {
+  border: 1px solid rgba(134, 175, 218, 0.45);
+  border-radius: 12px;
+  padding: 0.52rem 0.92rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #e9f2ff;
+  background: rgba(10, 30, 50, 0.8);
+}
+
+.topbar-logout-btn:hover {
+  border-color: rgba(196, 162, 97, 0.85);
+  color: #f3d191;
 }
 
 .editor-main-area {
@@ -418,6 +481,10 @@
   .editor-main-area {
     grid-template-columns: 420px minmax(0, 1fr);
   }
+
+  .editor-user-pill {
+    max-width: 130px;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -440,6 +507,10 @@
 
   .editor-last-sync {
     display: none;
+  }
+
+  .editor-user-pill {
+    max-width: 110px;
   }
 
   .editor-main-area {
@@ -494,6 +565,10 @@
   }
 
   .editor-last-sync {
+    display: none;
+  }
+
+  .editor-user-pill {
     display: none;
   }
 

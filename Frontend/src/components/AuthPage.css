@@ -1,0 +1,217 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+.auth-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #101114, #17121c 45%, #141b2a);
+  color: #f4f6fb;
+  padding: 1rem;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+}
+
+.auth-card.simple {
+  width: min(100%, 450px);
+  padding: 1.4rem;
+  border-radius: 16px;
+  border: 1px solid rgba(183, 197, 224, 0.22);
+  background: linear-gradient(145deg, rgba(18, 24, 35, 0.96), rgba(15, 18, 29, 0.94));
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
+  margin-bottom: 1rem;
+}
+
+.auth-brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(130deg, #f2d28a, #c38852);
+  color: #21150a;
+  font-weight: 900;
+}
+
+.auth-brand-copy h1 {
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.7rem;
+}
+
+.auth-brand-copy p {
+  margin: 0.2rem 0 0;
+  color: #c8d1df;
+  font-size: 0.82rem;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.92rem;
+}
+
+.auth-tabs button {
+  border: 1px solid rgba(142, 157, 184, 0.35);
+  background: rgba(24, 30, 45, 0.8);
+  color: #dce8fa;
+  border-radius: 10px;
+  padding: 0.6rem 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.auth-tabs button.active {
+  border-color: rgba(242, 209, 138, 0.9);
+  background: linear-gradient(130deg, #f1cf83, #be7d4a);
+  color: #21170f;
+}
+
+.auth-form {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #dde3ef;
+}
+
+.auth-form input {
+  width: 100%;
+  border: 1px solid rgba(142, 157, 184, 0.4);
+  border-radius: 10px;
+  background: rgba(10, 14, 24, 0.76);
+  color: #f4f7fc;
+  padding: 0.72rem 0.78rem;
+  font-size: 0.92rem;
+}
+
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(142, 157, 184, 0.4);
+  border-radius: 10px;
+  padding: 0 0.62rem;
+  background: rgba(10, 14, 24, 0.76);
+}
+
+.input-with-icon svg {
+  flex-shrink: 0;
+}
+
+.input-with-icon input {
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+}
+
+.input-with-icon input:focus,
+.auth-form input:focus {
+  outline: none;
+}
+
+.input-with-icon:focus-within,
+.auth-form input:focus {
+  border-color: rgba(242, 209, 138, 0.8);
+}
+
+.auth-submit-btn {
+  margin-top: 0.25rem;
+  border: none;
+  border-radius: 10px;
+  padding: 0.76rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+  cursor: pointer;
+  color: #21170f;
+  background: linear-gradient(130deg, #f1cf83, #be7d4a);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.auth-divider {
+  margin: 0.92rem 0 0.7rem;
+  position: relative;
+  text-align: center;
+}
+
+.auth-divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid rgba(141, 156, 183, 0.28);
+}
+
+.auth-divider span {
+  position: relative;
+  z-index: 1;
+  background: rgba(17, 21, 32, 0.95);
+  padding: 0 0.6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: #b0bbd0;
+}
+
+.social-provider-card {
+  border: 1px solid rgba(138, 156, 189, 0.26);
+  background: rgba(17, 22, 34, 0.48);
+  border-radius: 12px;
+  padding: 0.6rem 0.62rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.social-provider-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.46rem;
+  font-size: 0.82rem;
+  color: #d6e2f4;
+  font-weight: 700;
+}
+
+.google-login-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.social-disabled-note {
+  margin: 0;
+  color: #d1daea;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  border: 1px dashed rgba(137, 155, 184, 0.45);
+  border-radius: 10px;
+  padding: 0.52rem 0.65rem;
+}
+
+.social-disabled-note code {
+  font-size: 0.75rem;
+  color: #f2d18a;
+}
+
+.auth-error {
+  margin: 0.85rem 0 0;
+  padding: 0.62rem 0.68rem;
+  border-radius: 10px;
+  border: 1px solid rgba(235, 117, 117, 0.5);
+  background: rgba(109, 27, 27, 0.45);
+  color: #ffd9d9;
+  font-size: 0.85rem;
+}

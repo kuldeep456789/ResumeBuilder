@@ -6,39 +6,110 @@ import Dashboard from './components/Dashboard';
 import Editor from './components/Editor';
 import ResumeUploadModal from './components/ResumeUploadModal';
 import TemplateSelectionModal from './components/TemplateSelectionModal';
+import AuthPage from './components/AuthPage';
 import { calculateATSScore } from './services/ats/atsEngine';
 import ErrorBoundary from './components/ErrorBoundary';
+import { clearSession, fetchCurrentUser, readSession, saveSession } from './services/authService';
 import './components/Resume.css';
 import './App.css';
 
 function App() {
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authUser, setAuthUser] = useState(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const restoreSession = async () => {
+      const existingSession = readSession();
+      if (!existingSession?.token) {
+        if (isMounted) setAuthLoading(false);
+        return;
+      }
+
+      try {
+        const profile = await fetchCurrentUser(existingSession.token);
+        const refreshedSession = {
+          token: existingSession.token,
+          user: profile.user
+        };
+        saveSession(refreshedSession);
+
+        if (isMounted) {
+          setAuthUser(profile.user);
+        }
+      } catch {
+        clearSession();
+        if (isMounted) {
+          setAuthUser(null);
+        }
+      } finally {
+        if (isMounted) {
+          setAuthLoading(false);
+        }
+      }
+    };
+
+    restoreSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleAuthSuccess = (sessionPayload) => {
+    setAuthUser(sessionPayload.user);
+  };
+
+  const handleLogout = () => {
+    clearSession();
+    setAuthUser(null);
+  };
+
+  if (authLoading) {
+    return (
+      <div className="auth-loading-screen">
+        <div className="auth-loading-spinner"></div>
+        <p>Checking your session...</p>
+      </div>
+    );
+  }
+
+  if (!authUser) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
+
   return (
     <ErrorBoundary>
-      <MainApp />
+      <MainApp key={String(authUser.id)} user={authUser} onLogout={handleLogout} />
     </ErrorBoundary>
   );
 }
 
-function MainApp() {
+function MainApp({ user, onLogout }) {
   const getIsMobileViewport = () => window.innerWidth <= 900;
-  const [view, setView] = useState('dashboard'); // 'dashboard' or 'editor'
+  const [view, setView] = useState('dashboard');
   const [isMobileView, setIsMobileView] = useState(getIsMobileViewport);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
+
+  const resumeStorageKey = `resumeData:${user.id}`;
+  const savedResumesStorageKey = `savedResumesList:${user.id}`;
+
   const [savedResumes, setSavedResumes] = useState(() => {
     try {
-      const saved = localStorage.getItem('savedResumesList');
+      const saved = localStorage.getItem(savedResumesStorageKey);
       return saved ? JSON.parse(saved) : [];
     } catch (e) {
-      console.error("Error loading saved resumes:", e);
+      console.error('Error loading saved resumes:', e);
       return [];
     }
   });
 
   const [data, setData] = useState(() => {
     try {
-      const savedData = localStorage.getItem('resumeData');
+      const savedData = localStorage.getItem(resumeStorageKey);
       if (savedData) {
         const parsed = JSON.parse(savedData);
         return {
@@ -50,11 +121,11 @@ function MainApp() {
           projects: Array.isArray(parsed.projects) ? parsed.projects : initialResumeState.projects,
           certifications: Array.isArray(parsed.certifications) ? parsed.certifications : initialResumeState.certifications,
           achievements: Array.isArray(parsed.achievements) ? parsed.achievements : initialResumeState.achievements,
-          education: Array.isArray(parsed.education) ? parsed.education : initialResumeState.education,
+          education: Array.isArray(parsed.education) ? parsed.education : initialResumeState.education
         };
       }
     } catch (e) {
-      console.error("Error loading resume data:", e);
+      console.error('Error loading resume data:', e);
     }
     return initialResumeState;
   });
@@ -63,25 +134,25 @@ function MainApp() {
   const [atsScore, setAtsScore] = useState(() => calculateATSScore(data));
   const [editorAccentColor, setEditorAccentColor] = useState(() => data?.settings?.themeColor || '#004AAD');
 
+  const displayUserName = user.fullName || user.email || user.phone || 'User';
+
   const handleCheckATS = () => {
     setIsScanning(true);
-    // Simulate deep scanning
     setTimeout(() => {
       setIsScanning(false);
       setAtsScore(calculateATSScore(data));
-      // alert("Scan complete! Deep analysis updated.");
     }, 2500);
   };
 
   React.useEffect(() => {
-    localStorage.setItem('resumeData', JSON.stringify(data));
+    localStorage.setItem(resumeStorageKey, JSON.stringify(data));
     setLastSaved(new Date().toLocaleTimeString());
     if (!isScanning) setAtsScore(calculateATSScore(data));
-  }, [data, isScanning]);
+  }, [data, isScanning, resumeStorageKey]);
 
   React.useEffect(() => {
-    localStorage.setItem('savedResumesList', JSON.stringify(savedResumes));
-  }, [savedResumes]);
+    localStorage.setItem(savedResumesStorageKey, JSON.stringify(savedResumes));
+  }, [savedResumes, savedResumesStorageKey]);
 
   React.useEffect(() => {
     const currentThemeColor = data?.settings?.themeColor || '#004AAD';
@@ -96,7 +167,6 @@ function MainApp() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Scanner Animation Style
   const scannerStyle = `
     @keyframes scanMove {
         0% { top: -2px; opacity: 0; }
@@ -132,13 +202,12 @@ function MainApp() {
       lastModified: new Date().toISOString(),
       data: { ...data }
     };
-    setSavedResumes(prev => [newResume, ...prev]);
-    // alert("Resume saved successfully!");
+    setSavedResumes((prev) => [newResume, ...prev]);
   };
 
   const handleDeleteResume = (id) => {
-    if (window.confirm("Are you sure you want to delete this resume?")) {
-      setSavedResumes(prev => prev.filter(r => r.id !== id));
+    if (window.confirm('Are you sure you want to delete this resume?')) {
+      setSavedResumes((prev) => prev.filter((r) => r.id !== id));
     }
   };
 
@@ -162,7 +231,7 @@ function MainApp() {
 
   const handleAccentColorChange = (nextColor) => {
     setEditorAccentColor(nextColor);
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
       settings: {
         ...(prev.settings || {}),
@@ -175,13 +244,15 @@ function MainApp() {
 
   const handlePrint = useReactToPrint({
     contentRef: resumeRef,
-    documentTitle: 'Resume',
+    documentTitle: 'Resume'
   });
 
   if (view === 'dashboard') {
     return (
       <>
         <Dashboard
+          user={user}
+          onLogout={onLogout}
           data={data}
           atsScore={atsScore}
           lastSaved={lastSaved}
@@ -191,7 +262,7 @@ function MainApp() {
           onDelete={handleDeleteResume}
           onLoad={handleLoadResume}
           onNew={() => {
-            if (window.confirm("Create new resume? This will overwrite your current draft.")) {
+            if (window.confirm('Create new resume? This will overwrite your current draft.')) {
               setIsTemplateModalOpen(true);
             }
           }}
@@ -247,8 +318,11 @@ function MainApp() {
         </button>
 
         <div className="editor-topbar-right">
+          <span className="editor-user-pill" title={displayUserName}>
+            {displayUserName}
+          </span>
           <span className="editor-last-sync">
-            Last Sync: {lastSaved || "Not yet"}
+            Last Sync: {lastSaved || 'Not yet'}
           </span>
           <div className="editor-color-control">
             <label htmlFor="accentColorPicker" className="editor-color-label">Color</label>
@@ -265,6 +339,12 @@ function MainApp() {
             className="topbar-exit-btn"
           >
             Back
+          </button>
+          <button
+            onClick={onLogout}
+            className="topbar-logout-btn"
+          >
+            Logout
           </button>
         </div>
       </header>
@@ -287,7 +367,7 @@ function MainApp() {
             onCheckATS={handleCheckATS}
             isScanning={isScanning}
             onReset={() => {
-              if (window.confirm("Are you sure you want to reset all data? This cannot be undone.")) {
+              if (window.confirm('Are you sure you want to reset all data? This cannot be undone.')) {
                 setData(initialResumeState);
               }
             }}
