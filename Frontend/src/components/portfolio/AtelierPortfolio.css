@@ -1,0 +1,320 @@
+.atelier-portfolio-wrapper {
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  /* Design system tokens */
+  --surface: #131313;
+  --surface-container-low: #1b1b1b;
+  --surface-container-highest: #353535;
+  --surface-variant: rgba(53, 53, 53, 0.6);
+  --on-surface: #e2e2e2;
+  --primary: #fbc267;
+  --primary-container: #dda74f;
+  --secondary: #4ae176;
+  --outline-variant: rgba(79, 69, 55, 0.15); /* 15% opacity ghost border */
+}
+
+.atelier-portfolio-wrapper * {
+  box-sizing: border-box;
+}
+
+/* Glassmorphism Header */
+.atelier-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: var(--surface-variant);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4rem;
+  z-index: 100;
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.atelier-brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--on-surface);
+}
+
+.atelier-nav-btn {
+  background: transparent;
+  border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--primary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  position: relative;
+}
+
+.atelier-nav-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.atelier-nav-btn:hover::after {
+  width: 100%;
+}
+
+/* Hero Section */
+.atelier-hero {
+  min-height: 100vh;
+  padding: 120px 4rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.atelier-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.875rem; /* label-sm equivalent */
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--secondary);
+  margin-bottom: 1rem;
+}
+
+.atelier-headline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(3rem, 6vw, 5rem); /* display-lg */
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+  margin: 0 0 2rem 0;
+  max-width: 800px;
+}
+
+.atelier-hero-desc {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 600px;
+  color: var(--on-surface);
+  opacity: 0.8;
+  margin-bottom: 3rem;
+}
+
+/* Sections */
+.atelier-section {
+  padding: 8rem 4rem;
+  position: relative;
+}
+
+.atelier-section-header {
+  margin-bottom: 4rem;
+}
+
+.atelier-section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--on-surface);
+  opacity: 0.6;
+  margin: 0;
+}
+
+/* Layered Architecture grid */
+.atelier-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
+}
+
+.atelier-card {
+  background: var(--surface-container-low);
+  padding: 3rem;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
+  grid-column: span 12;
+}
+
+@media (min-width: 900px) {
+  .atelier-card {
+    grid-column: span 6;
+  }
+}
+
+.atelier-card:hover {
+  background: var(--surface-container-highest);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.atelier-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid var(--outline-variant);
+  pointer-events: none;
+}
+
+.card-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+.card-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+
+.card-meta {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.meta-pill {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+/* Tonal skills area */
+.atelier-skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.skill-category {
+  background: var(--surface-container-low);
+  padding: 2rem;
+  border: 1px solid var(--outline-variant);
+  flex: 1 1 300px;
+}
+
+.skill-category-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--on-surface);
+  margin: 0 0 1.5rem 0;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 1rem;
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-item {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  background: var(--surface-container-highest);
+  padding: 0.5rem 1rem;
+  border-radius: 2px;
+}
+
+/* Login Intro Overlay */
+.atelier-intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--surface);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.atelier-intro-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+}
+
+.intro-msg {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.25rem;
+  text-align: center;
+  max-width: 400px;
+  color: var(--on-surface);
+  opacity: 0.7;
+}
+
+.intro-btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-container));
+  border: none;
+  border-radius: 4px;
+  padding: 1rem 3rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #131313;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.intro-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(251, 194, 103, 0.2);
+}
+
+@media (max-width: 768px) {
+  .atelier-nav, .atelier-hero, .atelier-section {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .atelier-headline {
+    font-size: 2.5rem;
+  }
+  .atelier-hero {
+    padding-top: 100px;
+  }
+}

@@ -1,196 +1,172 @@
 import React from 'react';
-import { Upload, Trash2, Edit3, Calendar, FileText } from 'lucide-react';
-import './Dashboard.css';
 
-const Dashboard = ({ user, onLogout, onEdit, onNew, onUpload, data, atsScore, savedResumes = [], onDelete, onLoad }) => {
-    const displayName = user?.fullName || user?.email || user?.phone || 'User';
+const Dashboard = ({ user, onLogout, onEdit, onNew, onUpload, data, atsScore, onViewPortfolio }) => {
+  const displayName = user?.fullName || user?.email || user?.phone || 'User';
 
-    return (
-        <div className="dashboard-wrapper">
-            <div className="dashboard-container">
-                {/* Left Side: Text & Actions */}
-                <div className="dashboard-left">
-                    <div className="dashboard-account-bar">
-                        <div className="dashboard-user-chip" title={displayName}>
-                            Signed in as {displayName}
-                        </div>
-                        <button type="button" className="dashboard-logout-btn" onClick={onLogout}>
-                            Logout
-                        </button>
-                    </div>
+  return (
+    <div className="bg-background text-on-surface font-body selection:bg-primary-container/30 min-h-screen relative pb-20">
+      <style>{`
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tap-highlight-none {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .editorial-shadow {
+            box-shadow: 0 24px 40px rgba(0, 0, 0, 0.06);
+        }
+      `}</style>
 
-                    <div className="brand-strip">
-                        <div style={{
-                            width: '32px',
-                            height: '32px',
-                            background: 'var(--gold-accent)',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 4L4 8V16L12 20L20 16V8L12 4Z" stroke="black" strokeWidth="2.5" strokeLinejoin="round" />
-                                <path d="M12 8L8 12V14C8 14.5304 8.21071 15.0391 8.58579 15.4142C8.96086 15.7893 9.46957 16 10 16H14C14.5304 16 15.0391 15.7893 15.4142 15.4142C15.7893 15.0391 16 14.5304 16 14V12L12 8Z" fill="black" />
-                                <path d="M11 16V20L12 21L13 20V16" stroke="var(--gold-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.8rem', fontWeight: '700', letterSpacing: '2px', color: 'white' }}>RESUME <span style={{ color: 'var(--gold-accent)' }}>FIX</span></span>
-                    </div>
-
-                    <h1 className="main-title">
-                        Craft Your <br />
-                        <span className="serif-italic-gold">Story.</span>
-                    </h1>
-                    <p className="description">
-                        Create multiple professional resumes and track your ATS optimization in real-time.
-                    </p>
-                    <div className="button-group">
-                        <button className="btn-continue" onClick={onEdit}>
-                            Continue Editing Draft
-                        </button>
-                        <button className="btn-new" onClick={onNew}>
-                            New Resume
-                        </button>
-                        <button className="btn-upload" onClick={onUpload}>
-                            <Upload size={18} /> Upload Resume
-                        </button>
-                    </div>
-
-                    {/* Saved Resumes Section */}
-                    {savedResumes.length > 0 && (
-                        <div className="saved-resumes-section">
-                            <h3 style={{ color: 'white', fontSize: '1.2rem', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <FileText size={20} style={{ color: 'var(--gold-accent)' }} />
-                                My Saved Resumes
-                            </h3>
-                            <div className="saved-resumes-list">
-                                {savedResumes.map(resume => (
-                                    <div key={resume.id} className="saved-resume-card">
-                                        <div>
-                                            <h4 style={{ color: 'white', margin: '0 0 4px 0', fontSize: '1rem', fontWeight: 'bold' }}>{resume.title}</h4>
-                                            <div className="saved-resume-meta">
-                                                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                    <Calendar size={12} /> {new Date(resume.lastModified).toLocaleDateString()}
-                                                </span>
-                                                <span style={{ color: 'var(--gold-accent)', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                                                    ATS: {calculateSimpleATS(resume.data)}%
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="saved-resume-actions">
-                                            <button 
-                                                onClick={() => onLoad(resume.data)}
-                                                style={{
-                                                    padding: '8px 16px',
-                                                    background: 'var(--gold-accent)',
-                                                    color: 'black',
-                                                    border: 'none',
-                                                    borderRadius: '8px',
-                                                    cursor: 'pointer',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: '700',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '6px'
-                                                }}
-                                            >
-                                                <Edit3 size={14} /> Edit
-                                            </button>
-                                            <button 
-                                                onClick={() => onDelete(resume.id)}
-                                                style={{
-                                                    padding: '8px',
-                                                    background: 'rgba(239, 68, 68, 0.2)',
-                                                    color: '#ef4444',
-                                                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                                                    borderRadius: '8px',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Right Side: Floating Preview */}
-                <div className="dashboard-right">
-                    <div className="preview-card-wrapper">
-                        <div className="active-badge">ACTIVE DRAFT</div>
-                        <div className="preview-card">
-                            <div className="card-line-gold"></div>
-
-                            {/* ATS Score Badge */}
-                            <div style={{
-                                position: 'absolute',
-                                top: '15px',
-                                right: '15px',
-                                background: 'white',
-                                padding: '6px 12px',
-                                borderRadius: '100px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                                border: '1px solid #f1f5f9',
-                                zIndex: 10
-                            }} className="preview-score-badge">
-                                <div style={{
-                                    width: '8px',
-                                    height: '8px',
-                                    borderRadius: '50%',
-                                    background: atsScore.overall > 70 ? '#22c55e' : atsScore.overall > 50 ? '#f59e0b' : '#ef4444'
-                                }}></div>
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    fontWeight: '800',
-                                    color: '#1a202c',
-                                    letterSpacing: '0.5px'
-                                }}>{atsScore.overall}/100</span>
-                            </div>
-
-                            <h2 className="card-name">{data?.header?.name || 'Anonymous'}</h2>
-                            <p className="card-role">SOFTWARE DEVELOPER</p>
-
-                            <div className="card-section">
-                                <div className="card-section-title">PROJECTS</div>
-                                {(data?.projects || []).slice(0, 2).map((proj, i) => (
-                                    <div key={i} className="mini-project-link">
-                                        <span className="dot"></span>
-                                        <a href={(proj.links && proj.links[0]?.url) || "#"} target="_blank" rel="noopener noreferrer">
-                                            {proj.title}
-                                        </a>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="card-section">
-                                <div className="card-section-title">SKILLS</div>
-                                <div className="skeleton-bar gold" style={{ width: '80%' }}></div>
-                                <div className="skeleton-bar red" style={{ width: '60%' }}></div>
-                                <div className="skeleton-bar green" style={{ width: '70%' }}></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      {/* TopAppBar */}
+      <header className="fixed top-0 w-full z-50 bg-[#131313]/80 backdrop-blur-md flex justify-between items-center px-6 h-16">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden ring-1 ring-primary/20 flex items-center justify-center font-bold text-xs text-primary">
+            {displayName.charAt(0).toUpperCase()}
+          </div>
         </div>
-    );
-};
+        <h1 className="font-headline font-bold text-[#e9c176] tracking-tighter text-lg">RESUME FIX</h1>
+        <button onClick={onLogout} className="text-[#e9c176] hover:opacity-80 transition-opacity active:duration-150 scale-95" title="Logout">
+          <span className="material-symbols-outlined" data-icon="logout">logout</span>
+        </button>
+      </header>
 
-// Simple calculator for the list view
-const calculateSimpleATS = (data) => {
-    let score = 50;
-    if (data.header?.name) score += 5;
-    if (data.skills?.categories?.length > 0) score += 15;
-    if (data.experience?.length > 0) score += 15;
-    if (data.projects?.length > 0) score += 15;
-    return Math.min(score, 100);
+      <main className="pt-24 pb-32 px-6 max-w-md mx-auto">
+        {/* Hero Branding */}
+        <section className="mb-10">
+          <h2 className="font-headline text-4xl font-normal text-on-surface leading-tight tracking-tight mb-2">
+            Craft Your <span className="italic text-primary">Story</span>
+          </h2>
+          <p className="text-on-surface-variant font-body text-sm tracking-wide leading-relaxed">
+            The atelier is open. Refine your narrative for the global stage.
+          </p>
+        </section>
+
+        {/* Active Draft Card */}
+        <section className="relative mb-8">
+          <div className="bg-surface-container-low rounded-xl p-6 editorial-shadow relative overflow-hidden group">
+            {/* Background texture/gradient hint */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+            
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 block mb-1">Active Draft</span>
+                <h3 className="font-headline text-2xl text-on-surface">{data?.header?.name || 'Anonymous'}</h3>
+                <p className="text-xs text-on-surface-variant mt-1 font-medium tracking-wide">
+                  {data?.header?.title || 'SOFTWARE DEVELOPER'}
+                </p>
+              </div>
+              
+              {/* ATS Score Badge */}
+              <div className="bg-surface-bright/40 backdrop-blur-md rounded-xl p-3 flex flex-col items-center justify-center border border-primary/10">
+                <span className="text-xs font-bold text-primary tracking-tighter">{atsScore?.overall || 0}/100</span>
+                <div className="w-8 h-1 bg-surface-container mt-1 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 transition-all duration-500" style={{ width: `${atsScore?.overall || 0}%` }}></div>
+                </div>
+                <span className="text-[8px] uppercase tracking-widest text-on-surface-variant mt-1">ATS Score</span>
+              </div>
+            </div>
+
+            {/* Mini Preview Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <h4 className="text-[10px] uppercase tracking-widest text-primary font-bold">Key Skills</h4>
+                  <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2">
+                    {(() => {
+                      const items = data?.skills?.categories?.[0]?.items;
+                      if (!items) return 'Not specified';
+                      return Array.isArray(items) ? items.join(', ') : String(items);
+                    })()}
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <h4 className="text-[10px] uppercase tracking-widest text-primary font-bold">Latest Project</h4>
+                  <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2">
+                    {data?.projects?.[0]?.title || 'Not specified'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Subtle Mini Resume Mockup */}
+            <div className="bg-surface-container-highest/50 rounded-lg p-3 border border-outline-variant/10">
+              <div className="flex gap-2">
+                <div className="w-12 h-16 bg-surface-container-lowest rounded-sm flex flex-col gap-1.5 p-1.5">
+                  <div className="w-full h-1 bg-primary/20 rounded-full"></div>
+                  <div className="w-3/4 h-0.5 bg-on-surface-variant/10 rounded-full"></div>
+                  <div className="w-full h-0.5 bg-on-surface-variant/10 rounded-full"></div>
+                  <div className="w-full h-0.5 bg-on-surface-variant/10 rounded-full"></div>
+                </div>
+                <div className="flex-1 space-y-2 py-1">
+                  <div className="h-1.5 bg-primary/10 w-1/2 rounded-full"></div>
+                  <div className="h-1 bg-outline-variant/20 w-full rounded-full"></div>
+                  <div className="h-1 bg-outline-variant/20 w-5/6 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Primary Actions */}
+        <div className="flex flex-col gap-4 mb-8">
+          <button onClick={onEdit} className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition-transform text-sm tracking-wide uppercase flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-xl" data-icon="edit_note">edit_note</span>
+            Continue Editing Draft
+          </button>
+          
+          <button onClick={onViewPortfolio} className="w-full bg-surface-container-highest text-primary font-bold py-4 rounded-xl active:scale-[0.98] transition-transform text-sm tracking-wide uppercase flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+            View Live Portfolio
+          </button>
+        </div>
+
+        {/* Secondary Actions Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <button onClick={onNew} className="flex flex-col items-center justify-center p-6 rounded-xl bg-surface-container-low border border-outline-variant/15 active:bg-surface-container-high transition-colors group">
+            <span className="material-symbols-outlined text-primary mb-3 scale-110 group-active:scale-95 transition-transform" data-icon="add_circle">add_circle</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-on-surface">New Resume</span>
+          </button>
+          
+          <button onClick={onUpload} className="flex flex-col items-center justify-center p-6 rounded-xl bg-surface-container-low border border-outline-variant/15 active:bg-surface-container-high transition-colors group">
+            <span className="material-symbols-outlined text-primary mb-3 scale-110 group-active:scale-95 transition-transform" data-icon="cloud_upload">cloud_upload</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-on-surface">Upload Resume</span>
+          </button>
+        </div>
+
+        {/* Decorative Quote */}
+        <div className="mt-16 text-center">
+          <p className="font-headline italic text-on-surface-variant/40 text-sm leading-relaxed">
+            "Your resume is not a list of jobs, it is a curated portfolio of your impact."
+          </p>
+        </div>
+      </main>
+
+      {/* BottomNavBar */}
+      <nav className="fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-4 pb-safe bg-[#131313] z-50 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)] border-t border-[#d7c4a5]/15">
+        <button className="flex flex-col items-center justify-center bg-[#c5a059]/20 text-[#e9c176] rounded-xl px-4 py-2 tap-highlight-none active:scale-90 transition-transform">
+          <span className="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+          <span className="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Atelier</span>
+        </button>
+        
+        <button className="flex flex-col items-center justify-center text-[#d7c4a5]/60 hover:text-[#e9c176] transition-colors tap-highlight-none active:scale-90 transition-transform">
+          <span className="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+          <span className="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Portfolio</span>
+        </button>
+        
+        <button className="flex flex-col items-center justify-center text-[#d7c4a5]/60 hover:text-[#e9c176] transition-colors tap-highlight-none active:scale-90 transition-transform">
+          <span className="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+          <span className="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Drafts</span>
+        </button>
+        
+        <button className="flex flex-col items-center justify-center text-[#d7c4a5]/60 hover:text-[#e9c176] transition-colors tap-highlight-none active:scale-90 transition-transform">
+          <span className="material-symbols-outlined" data-icon="person">person</span>
+          <span className="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Account</span>
+        </button>
+      </nav>
+    </div>
+  );
 };
 
 export default Dashboard;
