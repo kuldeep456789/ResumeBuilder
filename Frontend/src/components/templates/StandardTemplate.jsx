@@ -55,12 +55,12 @@ const StandardTemplate = React.forwardRef(({ data }, ref) => {
             </div>
 
             {/* SKILLS */}
-            <div className="section">
+            <div className="section skills-section">
                 <div className="section-title">{titles.skills}</div>
-                <div className="section-content">
-                    <ul className="skill-list">
+                <div className="section-content skills-content-compact">
+                    <ul className="skill-list standard-skill-list">
                         {skills.categories.map((cat, i) => (
-                            <li key={i} className="skill-category">
+                            <li key={i} className="skill-category standard-skill-item">
                                 <strong>{cat.name}:</strong> {cat.items}
                             </li>
                         ))}

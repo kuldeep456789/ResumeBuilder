@@ -11,11 +11,11 @@
   place-items: center;
   gap: 0.8rem;
   background:
-    radial-gradient(circle at 10% 20%, rgba(239, 194, 103, 0.2), transparent 35%),
-    radial-gradient(circle at 90% 0%, rgba(54, 137, 188, 0.22), transparent 30%),
-    linear-gradient(155deg, #0b1220, #111827);
-  color: #e8f1ff;
-  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    radial-gradient(circle at 10% 20%, rgba(239, 201, 127, 0.2), transparent 35%),
+    radial-gradient(circle at 90% 0%, rgba(117, 144, 169, 0.2), transparent 30%),
+    linear-gradient(155deg, #111111, #171717);
+  color: #f1e9da;
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
 }
 
 .auth-loading-spinner {

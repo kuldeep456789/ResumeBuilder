@@ -8,6 +8,7 @@ import ResumeUploadModal from './components/ResumeUploadModal';
 import TemplateSelectionModal from './components/TemplateSelectionModal';
 import AuthPage from './components/AuthPage';
 import AtelierPortfolio from './components/portfolio/AtelierPortfolio';
+import Header from './components/Header';
 import { calculateATSScore } from './services/ats/atsEngine';
 import ErrorBoundary from './components/ErrorBoundary';
 import { clearSession, fetchCurrentUser, readSession, saveSession } from './services/authService';
@@ -89,7 +90,17 @@ function App() {
 
 function MainApp({ user, onLogout }) {
   const getIsMobileViewport = () => window.innerWidth <= 900;
+  const themeStorageKey = 'resumeThemeMode';
+  const getInitialThemeMode = () => {
+    const persisted = localStorage.getItem(themeStorageKey);
+    if (persisted === 'light' || persisted === 'dark') return persisted;
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    return prefersLight ? 'light' : 'dark';
+  };
+
   const [view, setView] = useState('dashboard');
+  const [themeMode, setThemeMode] = useState(getInitialThemeMode);
   const [isMobileView, setIsMobileView] = useState(getIsMobileViewport);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -135,8 +146,6 @@ function MainApp({ user, onLogout }) {
   const [atsScore, setAtsScore] = useState(() => calculateATSScore(data));
   const [editorAccentColor, setEditorAccentColor] = useState(() => data?.settings?.themeColor || '#004AAD');
 
-  const displayUserName = user.fullName || user.email || user.phone || 'User';
-
   const handleCheckATS = () => {
     setIsScanning(true);
     setTimeout(() => {
@@ -167,6 +176,17 @@ function MainApp({ user, onLogout }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('theme-light', themeMode === 'light');
+    root.style.colorScheme = themeMode;
+    localStorage.setItem(themeStorageKey, themeMode);
+  }, [themeMode, themeStorageKey]);
+
+  const handleToggleTheme = () => {
+    setThemeMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   const scannerStyle = `
     @keyframes scanMove {
@@ -258,6 +278,8 @@ function MainApp({ user, onLogout }) {
         <Dashboard
           user={user}
           onLogout={onLogout}
+          themeMode={themeMode}
+          onToggleTheme={handleToggleTheme}
           data={data}
           atsScore={atsScore}
           lastSaved={lastSaved}
@@ -306,66 +328,32 @@ function MainApp({ user, onLogout }) {
     <div className="editor-app-shell" style={{ '--editor-accent': editorAccentColor }}>
       <style>{scannerStyle}</style>
 
-      <header className="bg-background pt-6 pb-4 px-6 md:px-8 border-b border-outline-variant/15 sticky top-0 z-50 flex flex-col gap-6">
-        {/* Top Row: Navigation and Brand */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={handleGoToMainPage}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-surface-container-high border border-outline-variant/20 hover:bg-surface-container-highest transition-colors text-on-surface active:scale-95 shadow-sm"
-              aria-label="Back to Dashboard"
-              title="Back"
-            >
-              <span className="material-symbols-outlined text-[22px]">chevron_left</span>
-            </button>
-            <div className="flex flex-col justify-center">
-              <h2 className="font-headline text-2xl md:text-3xl text-primary leading-tight font-bold tracking-tight">Professional Editor Workspace</h2>
-              <p className="text-[10px] md:text-xs uppercase font-body tracking-[0.2em] font-bold text-on-surface-variant/60 mt-1">Resume Studio Atelier</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex justify-center items-center overflow-hidden border border-outline-variant/30 shadow-inner">
-               <span className="font-headline font-bold text-primary text-xl">
-                   {displayUserName.charAt(0).toUpperCase()}
-               </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Row: Actions */}
-        <div className="flex items-center justify-between">
-          <div className="flex bg-surface-container-lowest p-1.5 rounded-2xl border border-outline-variant/10 shadow-sm">
-            <label 
-              htmlFor="accentColorPicker" 
-              className="flex items-center gap-2.5 px-6 py-3 bg-gradient-to-r from-[#d7c4a5] to-[#c5a059] text-on-primary-container font-extrabold rounded-xl cursor-pointer text-xs uppercase tracking-[0.1em] relative group active:scale-[0.98] transition-transform shadow-md"
-            >
-              <span className="material-symbols-outlined text-[18px] group-hover:rotate-12 transition-transform">palette</span>
-              Color
-              <input
-                id="accentColorPicker"
-                type="color"
-                value={editorAccentColor}
-                onChange={(e) => handleAccentColorChange(e.target.value)}
-                className="absolute opacity-0 w-0 h-0 overflow-hidden"
-              />
-            </label>
-            <button className="flex items-center gap-2.5 px-6 py-3 text-on-surface-variant hover:text-on-surface font-bold rounded-xl hover:bg-surface-container-low transition-colors text-xs uppercase tracking-[0.1em] active:scale-[0.98]">
-              <span className="material-symbols-outlined text-[18px]">grid_view</span>
-              Layout
-            </button>
-          </div>
-
-          <button
-            onClick={onLogout}
-            className="w-12 h-12 flex items-center justify-center rounded-2xl text-[#d7c4a5]/70 hover:text-error hover:bg-error/10 transition-colors border border-transparent hover:border-error/20"
-            title="Logout"
-          >
-            <span className="material-symbols-outlined text-[22px]">logout</span>
-          </button>
-        </div>
-      </header>
+      <Header
+        onBack={handleGoToMainPage}
+        onLogout={onLogout}
+        user={user}
+        themeMode={themeMode}
+        onToggleTheme={handleToggleTheme}
+      >
+        <label 
+          htmlFor="accentColorPicker" 
+          className="flex items-center gap-2.5 px-6 py-3 bg-gradient-to-r from-[#d7c4a5] to-[#c5a059] text-on-primary-container font-extrabold rounded-xl cursor-pointer text-xs uppercase tracking-[0.1em] relative group active:scale-[0.98] transition-transform shadow-md"
+        >
+          <span className="material-symbols-outlined text-[18px] group-hover:rotate-12 transition-transform">palette</span>
+          Color
+          <input
+            id="accentColorPicker"
+            type="color"
+            value={editorAccentColor}
+            onChange={(e) => handleAccentColorChange(e.target.value)}
+            className="absolute opacity-0 w-0 h-0 overflow-hidden"
+          />
+        </label>
+        <button className="flex items-center gap-2.5 px-6 py-3 text-on-surface-variant hover:text-on-surface font-bold rounded-xl hover:bg-surface-container-low transition-colors text-xs uppercase tracking-[0.1em] active:scale-[0.98]">
+          <span className="material-symbols-outlined text-[18px]">grid_view</span>
+          Layout
+        </button>
+      </Header>
 
       <div
         className="editor-main-area"

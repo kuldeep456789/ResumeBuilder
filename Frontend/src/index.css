@@ -70,3 +70,61 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+:root {
+  --app-base-bg: #131313;
+  --app-base-text: #e5e2e1;
+}
+
+:root.theme-light {
+  --app-base-bg: #f4efe6;
+  --app-base-text: #2f291f;
+}
+
+body {
+  background-color: var(--app-base-bg);
+  color: var(--app-base-text);
+}
+
+:root.theme-light #root {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(224, 188, 119, 0.18), transparent 32%),
+    radial-gradient(circle at 90% 0%, rgba(145, 170, 196, 0.2), transparent 34%),
+    var(--app-base-bg);
+}
+
+:root.theme-light .bg-background {
+  background-color: #f4efe6 !important;
+}
+
+:root.theme-light .text-on-surface {
+  color: #2f291f !important;
+}
+
+:root.theme-light .text-on-surface-variant {
+  color: #6b5f4d !important;
+}
+
+:root.theme-light .text-primary {
+  color: #91601b !important;
+}
+
+:root.theme-light .bg-surface-container-low,
+:root.theme-light .bg-surface-container,
+:root.theme-light .bg-surface-container-high,
+:root.theme-light .bg-surface-container-highest,
+:root.theme-light .bg-surface-bright {
+  background-color: #e9dfcf !important;
+}
+
+:root.theme-light .border-outline-variant\/15 {
+  border-color: rgba(129, 107, 72, 0.15) !important;
+}
+
+:root.theme-light .border-outline-variant\/20 {
+  border-color: rgba(129, 107, 72, 0.2) !important;
+}
+
+:root.theme-light .border-outline-variant\/30 {
+  border-color: rgba(129, 107, 72, 0.3) !important;
+}

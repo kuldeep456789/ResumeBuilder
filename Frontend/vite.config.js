@@ -11,14 +11,20 @@ export default defineConfig({
     },
   },
   server: {
+    host: true,
     port: 8000,
-    strictPort: false,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 8000
+    },
     headers: {
       'X-Frame-Options': 'DENY',
       'X-Content-Type-Options': 'nosniff',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
       'Permissions-Policy': 'camera=(), microphone=(), geolocation=*',
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https://*.google.com https://*.amazon.com https://*.microsoft.com https://*.stripe.com https://*.facebook.com https://*.uber.com https://*.zomato.com https://*.canva.com https://lh3.googleusercontent.com; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:5000; font-src 'self' data: https://fonts.gstatic.com;"
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https://*.google.com https://*.amazon.com https://*.microsoft.com https://*.stripe.com https://*.facebook.com https://*.uber.com https://*.zomato.com https://*.canva.com https://lh3.googleusercontent.com; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:5000 http://127.0.0.1:5000 ws://localhost:8000 ws://127.0.0.1:8000; font-src 'self' data: https://fonts.gstatic.com;"
     }
   }
 })

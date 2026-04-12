@@ -25,7 +25,7 @@
 }
 
 .modern-content {
-    padding: 0 40px 30px 40px;
+    padding: 2px;
 }
 
 .modern-section {
@@ -97,7 +97,34 @@
 }
 
 .modern-skill-list li {
-    margin-bottom: 6px;
+    margin-bottom: 0;
+}
+
+.modern-skills-section .modern-section-title {
+    margin-bottom: 4px;
+}
+
+.modern-skills-content {
+    padding-left: 2px;
+}
+
+.modern-skill-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+}
+
+.modern-skill-item {
+    font-size: 11pt;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.modern-skill-item + .modern-skill-item {
+    margin-top: 1px;
 }
 
 .modern-cert-list a {

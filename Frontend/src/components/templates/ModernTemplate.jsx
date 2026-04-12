@@ -49,12 +49,12 @@ const ModernTemplate = React.forwardRef(({ data }, ref) => {
             <div className="modern-content">
                 {/* SKILLS */}
                 {skills.categories.length > 0 && (
-                    <div className="section modern-section">
+                    <div className="section modern-section modern-skills-section">
                         <div className="modern-section-title">{titles.skills}</div>
-                        <div className="modern-section-content">
+                        <div className="modern-section-content modern-skills-content">
                             <ul className="skill-list modern-skill-list">
                                 {skills.categories.map((cat, i) => (
-                                    <li key={i} className="skill-category">
+                                    <li key={i} className="skill-category modern-skill-item">
                                         <strong style={{ color: 'var(--theme-color)' }}>{cat.name}:</strong> {cat.items}
                                     </li>
                                 ))}
