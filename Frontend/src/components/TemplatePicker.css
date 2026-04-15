@@ -1,0 +1,150 @@
+/* ── Template Picker Full Screen ── */
+.tp-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #fcfcfd 0%, #ede9fe 100%);
+  padding: 60px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.tp-back-btn {
+  position: absolute;
+  top: 32px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: white;
+  border-radius: 100px;
+  font-weight: 600;
+  color: #374151;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-family: inherit;
+}
+.tp-back-btn:hover {
+  background: #f9fafb;
+  transform: translateX(-2px);
+}
+
+.tp-header {
+  text-align: center;
+  margin-bottom: 50px;
+  padding: 0 20px;
+}
+
+.tp-title {
+  font-family: var(--rf-font-display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 800;
+  color: #1f2937;
+  letter-spacing: -0.02em;
+}
+
+.tp-carousel-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.tp-carousel {
+  display: flex;
+  gap: 48px;
+  overflow-x: auto;
+  padding: 40px calc(50vw - 250px); /* Center the active card */
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  width: 100%;
+}
+
+.tp-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.tp-card {
+  flex: 0 0 500px;
+  scroll-snap-align: center;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid transparent;
+  overflow: hidden;
+}
+
+.tp-card:hover {
+  transform: translateY(-16px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(99, 56, 240, 0.15);
+  border-color: #6338f0;
+}
+
+.tp-card-preview {
+  height: 620px;
+  background: #f8fafc;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tp-card-preview::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 100px;
+  background: linear-gradient(to top, white, transparent);
+  pointer-events: none;
+}
+
+/* Skeleton Styles for fake resumes */
+.tp-sk-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.tp-sk-name { width: 60%; height: 24px; background: #cbd5e1; border-radius: 4px; }
+.tp-sk-contact { width: 80%; height: 10px; background: #e2e8f0; border-radius: 2px; }
+
+.tp-sk-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tp-sk-sec-title { width: 30%; height: 14px; background: #94a3b8; border-radius: 2px; margin-bottom: 4px; }
+.tp-sk-line { width: 100%; height: 8px; background: #e2e8f0; border-radius: 2px; }
+.tp-sk-line.w-80 { width: 80%; }
+.tp-sk-line.w-90 { width: 90%; }
+.tp-sk-line.w-60 { width: 60%; }
+
+/* Different Template Skeleton Themes */
+.tp-theme-modern .tp-sk-header { align-items: flex-start; border-left: 4px solid #3b82f6; padding-left: 16px; }
+.tp-theme-modern .tp-sk-name { background: #3b82f6; width: 40%; }
+.tp-theme-minimal .tp-sk-header { border-bottom: 1px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
+
+.tp-card-info {
+  background: white;
+  padding: 24px;
+  text-align: center;
+  border-top: 1px solid #f1f5f9;
+  z-index: 10;
+}
+
+.tp-card-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+}

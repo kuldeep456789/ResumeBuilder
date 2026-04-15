@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Type, Palette, Save, Download, Plus, Trash2, ChevronDown, ChevronUp, RotateCcw, Target, ShieldCheck, Zap } from 'lucide-react';
+import { Save, Download, Plus, Trash2, ChevronDown, ChevronUp, RotateCcw, Target, ShieldCheck } from 'lucide-react';
 import ATSCategoryBreakdownCard from './ATSCategoryBreakdownCard';
+import './Editor.css';
 
 const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheckATS, isScanning }) => {
     const [activeSection, setActiveSection] = useState('header');
@@ -38,111 +39,41 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
     };
 
     return (
-        <div className="editor-sidebar no-print" style={{
-            width: '100%',
-            background: '#fff',
-            padding: '32px 24px',
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            color: '#1a202c'
-        }}>
-            {/* Professional Controls Segment */}
-            <div style={{ marginBottom: '40px' }}>
-                <div style={{ 
-                    padding: '20px', 
-                    border: '2.5px solid #1a202c', 
-                    borderRadius: '16px',
-                    background: '#fff',
-                    marginBottom: '24px',
-                    boxShadow: '8px 8px 0px #1a202c'
-                }}>
-                    <h2 style={{ fontSize: '1.2rem', fontWeight: '900', textTransform: 'uppercase', marginBottom: '20px', letterSpacing: '0.1em' }}>
-                        Editor <span style={{ color: '#004AAD' }}>Workspace</span>
+        <div className="editor-sidebar no-print">
+            {/* Controls Block */}
+            <div className="ed-controls">
+                <div className="ed-controls-card">
+                    <h2 className="ed-controls-title">
+                        Editor <span className="ed-accent-text">Workspace</span>
                     </h2>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <button 
+                    <div className="ed-controls-actions">
+                        <button
                             onClick={() => setLocationEnabled(!locationEnabled)}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                background: locationEnabled ? '#1a202c' : 'transparent',
-                                color: locationEnabled ? '#fff' : '#1a202c',
-                                border: '2px solid #1a202c',
-                                borderRadius: '10px',
-                                fontSize: '12px',
-                                fontWeight: '800',
-                                textTransform: 'uppercase',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px',
-                                transition: 'all 0.2s'
-                            }}
+                            className={`ed-toggle-btn ${locationEnabled ? 'active' : ''}`}
                         >
                             <ShieldCheck size={16} /> {locationEnabled ? 'LOCATION ENABLED' : 'ENABLE LOCATION'}
                         </button>
 
-                        <button 
+                        <button
                             onClick={onCheckATS}
                             disabled={isScanning}
-                            style={{
-                                flex: 1,
-                                padding: '12px',
-                                background: isScanning ? '#f1f5f9' : '#004AAD',
-                                color: isScanning ? '#64748b' : '#fff',
-                                border: 'none',
-                                borderRadius: '10px',
-                                fontSize: '11px',
-                                fontWeight: '800',
-                                cursor: isScanning ? 'not-allowed' : 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                justifyContent: 'center',
-                                transition: 'all 0.2s',
-                                opacity: isScanning ? 0.7 : 1,
-                                boxShadow: isScanning ? 'none' : '0 4px 12px rgba(0, 74, 173, 0.2)'
-                            }}
+                            className={`ed-ats-btn ${isScanning ? 'scanning' : ''}`}
                         >
                             {isScanning ? (
-                                <>
-                                    <RotateCcw size={16} className="animate-spin" /> SCANNING...
-                                </>
+                                <><RotateCcw size={16} className="ed-spin" /> SCANNING...</>
                             ) : (
-                                <>
-                                    <ShieldCheck size={16} /> CHECK ATS SCORE
-                                </>
+                                <><ShieldCheck size={16} /> CHECK ATS SCORE</>
                             )}
                         </button>
 
-                        <div style={{ position: 'relative' }}>
-                            <div style={{ 
-                                position: 'absolute', 
-                                left: '12px', 
-                                top: '50%', 
-                                transform: 'translateY(-50%)',
-                                color: '#1a202c',
-                                display: 'flex'
-                            }}>
-                                <Target size={16} />
-                            </div>
-                            <input 
+                        <div className="ed-target-input-wrap">
+                            <Target size={16} className="ed-target-icon" />
+                            <input
                                 placeholder="TARGET ROLE (e.g. Frontend Engineer)"
                                 value={data.targetRole || ''}
                                 onChange={(e) => onChange({ ...data, targetRole: e.target.value })}
-                                style={{
-                                    width: '100%',
-                                    padding: '12px 12px 12px 40px',
-                                    background: '#f8fafc',
-                                    border: '2px solid #1a202c',
-                                    borderRadius: '10px',
-                                    fontSize: '11px',
-                                    fontWeight: '700',
-                                    textTransform: 'uppercase',
-                                    outline: 'none',
-                                    color: '#1a202c'
-                                }}
+                                className="ed-target-input"
                             />
                         </div>
                     </div>
@@ -161,26 +92,26 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
 
             {/* Input Sections */}
             <div className="editor-sections">
-                {/* Person Info */}
-                <div className="section-block" style={{ marginBottom: '16px' }}>
-                    <div 
-                        onClick={() => setActiveSection(activeSection === 'header' ? '' : 'header')} 
-                        style={sectionHeaderStyle(activeSection === 'header')}
+                {/* Personal Info */}
+                <div className="ed-section">
+                    <button
+                        onClick={() => setActiveSection(activeSection === 'header' ? '' : 'header')}
+                        className={`ed-section-header ${activeSection === 'header' ? 'active' : ''}`}
                     >
                         <span>PERSONAL INFO</span>
                         {activeSection === 'header' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </div>
+                    </button>
                     {activeSection === 'header' && (
-                        <div style={sectionContentStyle}>
+                        <div className="ed-section-content">
                             <input
                                 placeholder="Full Name"
                                 value={data.header.name}
                                 onChange={(e) => handleChange('header', 'name', e.target.value)}
-                                style={refinedInputStyle}
+                                className="ed-input"
                             />
                             {data.header.links.map((link, i) => (
-                                <div key={i} style={cardStyle}>
-                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                <div key={i} className="ed-card">
+                                    <div className="ed-card-row">
                                         <input
                                             placeholder="Label"
                                             value={link.label}
@@ -189,13 +120,13 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                                                 links[i].label = e.target.value;
                                                 handleChange('header', 'links', links);
                                             }}
-                                            style={{ ...refinedInputStyle, marginBottom: 0 }}
+                                            className="ed-input"
                                         />
                                         <button onClick={() => {
                                             const links = [...data.header.links];
                                             links.splice(i, 1);
                                             handleChange('header', 'links', links);
-                                        }} style={deleteSmallBtnStyle}><Trash2 size={14} /></button>
+                                        }} className="ed-delete-btn"><Trash2 size={14} /></button>
                                     </div>
                                     <input
                                         placeholder="URL"
@@ -205,7 +136,7 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                                             links[i].url = e.target.value;
                                             handleChange('header', 'links', links);
                                         }}
-                                        style={{ ...refinedInputStyle, marginBottom: 0 }}
+                                        className="ed-input"
                                     />
                                 </div>
                             ))}
@@ -213,45 +144,45 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                                 const links = [...data.header.links];
                                 links.push({ label: '', url: '', type: '' });
                                 handleChange('header', 'links', links);
-                            }} style={addBtnStyle}><Plus size={14} /> Add Contact Link</button>
+                            }} className="ed-add-btn"><Plus size={14} /> Add Contact Link</button>
                         </div>
                     )}
                 </div>
 
                 {/* Professional Summary */}
-                <div className="section-block" style={{ marginBottom: '16px' }}>
-                    <div 
-                        onClick={() => setActiveSection(activeSection === 'summary' ? '' : 'summary')} 
-                        style={sectionHeaderStyle(activeSection === 'summary')}
+                <div className="ed-section">
+                    <button
+                        onClick={() => setActiveSection(activeSection === 'summary' ? '' : 'summary')}
+                        className={`ed-section-header ${activeSection === 'summary' ? 'active' : ''}`}
                     >
                         <span>PROFESSIONAL SUMMARY</span>
                         {activeSection === 'summary' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </div>
+                    </button>
                     {activeSection === 'summary' && (
-                        <div style={sectionContentStyle}>
+                        <div className="ed-section-content">
                             <textarea
                                 placeholder="Brief professional overview..."
                                 value={data.summary || ''}
                                 onChange={(e) => onChange({ ...data, summary: e.target.value })}
-                                style={{ ...refinedTextareaStyle, minHeight: '150px' }}
+                                className="ed-textarea ed-textarea-lg"
                             />
                         </div>
                     )}
                 </div>
 
                 {/* Skills */}
-                <div className="section-block" style={{ marginBottom: '16px' }}>
-                    <div 
-                        onClick={() => setActiveSection(activeSection === 'skills' ? '' : 'skills')} 
-                        style={sectionHeaderStyle(activeSection === 'skills')}
+                <div className="ed-section">
+                    <button
+                        onClick={() => setActiveSection(activeSection === 'skills' ? '' : 'skills')}
+                        className={`ed-section-header ${activeSection === 'skills' ? 'active' : ''}`}
                     >
                         <span>TECHNICAL SKILLS</span>
                         {activeSection === 'skills' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </div>
+                    </button>
                     {activeSection === 'skills' && (
-                        <div style={sectionContentStyle}>
+                        <div className="ed-section-content">
                             {data.skills.categories.map((cat, i) => (
-                                <div key={i} style={cardStyle}>
+                                <div key={i} className="ed-card">
                                     <input
                                         placeholder="Category"
                                         value={cat.name}
@@ -260,7 +191,7 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                                             cats[i].name = e.target.value;
                                             handleChange('skills', 'categories', cats);
                                         }}
-                                        style={{ ...refinedInputStyle, fontWeight: '800' }}
+                                        className="ed-input ed-input-bold"
                                     />
                                     <textarea
                                         placeholder="Skills (comma separated)"
@@ -270,127 +201,127 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                                             cats[i].items = e.target.value;
                                             handleChange('skills', 'categories', cats);
                                         }}
-                                        style={{ ...refinedTextareaStyle, minHeight: '80px' }}
+                                        className="ed-textarea"
                                     />
                                     <button onClick={() => {
                                         const cats = [...data.skills.categories];
                                         cats.splice(i, 1);
                                         handleChange('skills', 'categories', cats);
-                                    }} style={deleteSmallBtnStyle}><Trash2 size={14} /> Remove Category</button>
+                                    }} className="ed-delete-btn ed-delete-wide"><Trash2 size={14} /> Remove Category</button>
                                 </div>
                             ))}
                             <button onClick={() => {
                                 const cats = [...data.skills.categories];
                                 cats.push({ name: '', items: '' });
                                 handleChange('skills', 'categories', cats);
-                            }} style={addBtnStyle}><Plus size={14} /> Add Skill Set</button>
+                            }} className="ed-add-btn"><Plus size={14} /> Add Skill Set</button>
                         </div>
                     )}
                 </div>
 
                 {/* Experience */}
-                <div className="section-block" style={{ marginBottom: '16px' }}>
-                    <div 
-                        onClick={() => setActiveSection(activeSection === 'experience' ? '' : 'experience')} 
-                        style={sectionHeaderStyle(activeSection === 'experience')}
+                <div className="ed-section">
+                    <button
+                        onClick={() => setActiveSection(activeSection === 'experience' ? '' : 'experience')}
+                        className={`ed-section-header ${activeSection === 'experience' ? 'active' : ''}`}
                     >
                         <span>WORK EXPERIENCE</span>
                         {activeSection === 'experience' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </div>
+                    </button>
                     {activeSection === 'experience' && (
-                        <div style={sectionContentStyle}>
+                        <div className="ed-section-content">
                             {data.experience.map((exp, i) => (
-                                <div key={i} style={cardStyle}>
-                                    <input value={exp.company} onChange={(e) => handleChange('experience', 'company', e.target.value, i, 'company')} style={refinedInputStyle} placeholder="Company" />
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <input value={exp.role} onChange={(e) => handleChange('experience', 'role', e.target.value, i, 'role')} style={refinedInputStyle} placeholder="Role" />
-                                        <input value={exp.date} onChange={(e) => handleChange('experience', 'date', e.target.value, i, 'date')} style={refinedInputStyle} placeholder="Date" />
+                                <div key={i} className="ed-card">
+                                    <input value={exp.company} onChange={(e) => handleChange('experience', 'company', e.target.value, i, 'company')} className="ed-input" placeholder="Company" />
+                                    <div className="ed-card-row">
+                                        <input value={exp.role} onChange={(e) => handleChange('experience', 'role', e.target.value, i, 'role')} className="ed-input" placeholder="Role" />
+                                        <input value={exp.date} onChange={(e) => handleChange('experience', 'date', e.target.value, i, 'date')} className="ed-input" placeholder="Date" />
                                     </div>
                                     <textarea
                                         value={exp.description.join('\n')}
                                         onChange={(e) => handleChange('experience', 'description', e.target.value.split('\n'), i, 'description')}
-                                        style={refinedTextareaStyle}
+                                        className="ed-textarea"
                                         placeholder="Bullets (one per line)"
                                     />
-                                    <button onClick={() => removeArrayItem('experience', i)} style={deleteSmallBtnStyle}><Trash2 size={14} /> Remove Entry</button>
+                                    <button onClick={() => removeArrayItem('experience', i)} className="ed-delete-btn ed-delete-wide"><Trash2 size={14} /> Remove Entry</button>
                                 </div>
                             ))}
-                            <button onClick={() => addArrayItem('experience', { company: '', role: '', date: '', description: [] })} style={addBtnStyle}><Plus size={14} /> Add Experience</button>
+                            <button onClick={() => addArrayItem('experience', { company: '', role: '', date: '', description: [] })} className="ed-add-btn"><Plus size={14} /> Add Experience</button>
                         </div>
                     )}
                 </div>
 
                 {/* Projects */}
-                <div className="section-block" style={{ marginBottom: '16px' }}>
-                    <div 
-                        onClick={() => setActiveSection(activeSection === 'projects' ? '' : 'projects')} 
-                        style={sectionHeaderStyle(activeSection === 'projects')}
+                <div className="ed-section">
+                    <button
+                        onClick={() => setActiveSection(activeSection === 'projects' ? '' : 'projects')}
+                        className={`ed-section-header ${activeSection === 'projects' ? 'active' : ''}`}
                     >
                         <span>PROJECTS</span>
                         {activeSection === 'projects' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </div>
+                    </button>
                     {activeSection === 'projects' && (
-                        <div style={sectionContentStyle}>
+                        <div className="ed-section-content">
                             {data.projects.map((proj, i) => (
-                                <div key={i} style={cardStyle}>
-                                    <input value={proj.title} onChange={(e) => handleChange('projects', 'title', e.target.value, i, 'title')} style={refinedInputStyle} placeholder="Project Name" />
-                                    <input value={proj.techStack} onChange={(e) => handleChange('projects', 'techStack', e.target.value, i, 'techStack')} style={refinedInputStyle} placeholder="Technologies" />
+                                <div key={i} className="ed-card">
+                                    <input value={proj.title} onChange={(e) => handleChange('projects', 'title', e.target.value, i, 'title')} className="ed-input" placeholder="Project Name" />
+                                    <input value={proj.techStack} onChange={(e) => handleChange('projects', 'techStack', e.target.value, i, 'techStack')} className="ed-input" placeholder="Technologies" />
                                     <textarea
                                         value={proj.description.join('\n')}
                                         onChange={(e) => handleChange('projects', 'description', e.target.value.split('\n'), i, 'description')}
-                                        style={refinedTextareaStyle}
+                                        className="ed-textarea"
                                         placeholder="Description Bullets"
                                     />
-                                    <button onClick={() => removeArrayItem('projects', i)} style={deleteSmallBtnStyle}><Trash2 size={14} /> Remove Project</button>
+                                    <button onClick={() => removeArrayItem('projects', i)} className="ed-delete-btn ed-delete-wide"><Trash2 size={14} /> Remove Project</button>
                                 </div>
                             ))}
-                            <button onClick={() => addArrayItem('projects', { title: '', techStack: '', date: '', description: [] })} style={addBtnStyle}><Plus size={14} /> Add Project</button>
+                            <button onClick={() => addArrayItem('projects', { title: '', techStack: '', date: '', description: [] })} className="ed-add-btn"><Plus size={14} /> Add Project</button>
                         </div>
                     )}
                 </div>
 
                 {/* Appearance */}
-                <div className="section-block" style={{ marginBottom: '16px' }}>
-                    <div 
-                        onClick={() => setActiveSection(activeSection === 'settings' ? '' : 'settings')} 
-                        style={sectionHeaderStyle(activeSection === 'settings')}
+                <div className="ed-section">
+                    <button
+                        onClick={() => setActiveSection(activeSection === 'settings' ? '' : 'settings')}
+                        className={`ed-section-header ${activeSection === 'settings' ? 'active' : ''}`}
                     >
                         <span>APPEARANCE & TYPE</span>
                         {activeSection === 'settings' ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </div>
+                    </button>
                     {activeSection === 'settings' && (
-                        <div style={sectionContentStyle}>
-                            <label style={labelStyle}>Template Style</label>
+                        <div className="ed-section-content">
+                            <label className="ed-label">Template Style</label>
                             <select
                                 value={data.settings.template || 'standard'}
                                 onChange={(e) => handleChange('settings', 'template', e.target.value)}
-                                style={refinedSelectStyle}
+                                className="ed-select"
                             >
                                 <option value="standard">Standard Professional</option>
                                 <option value="modern">Modern Creative</option>
                                 <option value="minimalist">Minimalist Exec</option>
                             </select>
-                            
-                            <label style={labelStyle}>Theme Color</label>
+
+                            <label className="ed-label">Theme Color</label>
                             <input
                                 type="color"
                                 value={data.settings.themeColor}
                                 onChange={(e) => handleChange('settings', 'themeColor', e.target.value)}
-                                style={{ width: '100%', height: '40px', padding: '4px', border: '2px solid #1a202c', borderRadius: '8px', cursor: 'pointer', marginBottom: '16px' }}
+                                className="ed-color-input"
                             />
 
-                            <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                                <label style={{ ...labelStyle, color: '#1a202c', marginBottom: '12px' }}>Custom Section Headings</label>
+                            <div className="ed-headings-card">
+                                <label className="ed-label">Custom Section Headings</label>
                                 {Object.keys(data.sectionTitles || {}).map(key => (
-                                    <div key={key} style={{ marginBottom: '12px' }}>
-                                        <label style={{ fontSize: '9px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px', display: 'block' }}>{key}</label>
+                                    <div key={key} className="ed-heading-field">
+                                        <label className="ed-heading-label">{key}</label>
                                         <input
                                             value={data.sectionTitles[key]}
                                             onChange={(e) => {
                                                 const titles = { ...data.sectionTitles, [key]: e.target.value };
                                                 onChange({ ...data, sectionTitles: titles });
                                             }}
-                                            style={{ ...refinedInputStyle, padding: '8px 12px', fontSize: '12px', marginBottom: 0 }}
+                                            className="ed-input ed-input-sm"
                                         />
                                     </div>
                                 ))}
@@ -399,27 +330,8 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                     )}
                 </div>
 
-                {/* Reset Action */}
-                <button 
-                    onClick={onReset}
-                    style={{
-                        width: '100%',
-                        padding: '16px',
-                        background: '#fee2e2',
-                        color: '#b91c1c',
-                        border: '2px solid #f87171',
-                        borderRadius: '16px',
-                        fontSize: '12px',
-                        fontWeight: '800',
-                        textTransform: 'uppercase',
-                        marginTop: '24px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                    }}
-                >
+                {/* Reset */}
+                <button onClick={onReset} className="ed-reset-btn">
                     <RotateCcw size={16} /> Reset All Data
                 </button>
             </div>
@@ -427,116 +339,4 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
     );
 };
 
-// --- STYLING MACROS ---
-const sectionHeaderStyle = (isActive) => ({
-    padding: '16px 20px',
-    background: isActive ? '#1a202c' : '#fff',
-    color: isActive ? '#fff' : '#1a202c',
-    border: '2.5px solid #1a202c',
-    borderRadius: '16px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    cursor: 'pointer',
-    fontSize: '11px',
-    fontWeight: '900',
-    letterSpacing: '0.1em',
-    transition: 'all 0.2s',
-    boxShadow: isActive ? 'none' : '4px 4px 0px #1a202c'
-});
-
-const sectionContentStyle = {
-    padding: '24px 8px 8px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px'
-};
-
-const refinedInputStyle = {
-    width: '100%',
-    padding: '12px 16px',
-    background: '#fff',
-    border: '2px solid #cbd5e1',
-    borderRadius: '12px',
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#334155',
-    outline: 'none',
-    transition: 'all 0.2s',
-    marginBottom: '8px'
-};
-
-const refinedTextareaStyle = {
-    width: '100%',
-    padding: '12px 16px',
-    background: '#fff',
-    border: '2px solid #cbd5e1',
-    borderRadius: '12px',
-    fontSize: '13px',
-    lineHeight: '1.6',
-    fontWeight: '500',
-    color: '#334155',
-    outline: 'none',
-    resize: 'vertical',
-    fontFamily: 'inherit'
-};
-
-const refinedSelectStyle = {
-    width: '100%',
-    padding: '12px 16px',
-    background: '#fff',
-    border: '2px solid #cbd5e1',
-    borderRadius: '12px',
-    fontSize: '13px',
-    fontWeight: '700',
-    outline: 'none',
-    cursor: 'pointer',
-    marginBottom: '16px'
-};
-
-const cardStyle = {
-    padding: '16px',
-    border: '1px solid #e2e8f0',
-    borderRadius: '16px',
-    background: '#f8fafc',
-    marginBottom: '12px'
-};
-
-const labelStyle = {
-    fontSize: '10px',
-    fontWeight: '800',
-    textTransform: 'uppercase',
-    color: '#64748b',
-    marginBottom: '6px',
-    display: 'block',
-    letterSpacing: '0.05em'
-};
-
-const addBtnStyle = {
-    padding: '12px',
-    background: '#f0fdf4',
-    color: '#15803d',
-    border: '2px dashed #86efac',
-    borderRadius: '12px',
-    fontSize: '12px',
-    fontWeight: '800',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-    width: '100%'
-};
-
-const deleteSmallBtnStyle = {
-    padding: '8px',
-    background: '#fff',
-    color: '#ef4444',
-    border: '1.5px solid #fee2e2',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-};
 export default Editor;

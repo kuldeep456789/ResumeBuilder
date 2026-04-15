@@ -5,13 +5,14 @@ import Resume from './components/Resume';
 import Dashboard from './components/Dashboard';
 import Editor from './components/Editor';
 import ResumeUploadModal from './components/ResumeUploadModal';
-import TemplateSelectionModal from './components/TemplateSelectionModal';
 import AuthPage from './components/AuthPage';
 import AtelierPortfolio from './components/portfolio/AtelierPortfolio';
 import Header from './components/Header';
 import { calculateATSScore } from './services/ats/atsEngine';
 import ErrorBoundary from './components/ErrorBoundary';
 import { clearSession, fetchCurrentUser, readSession, saveSession } from './services/authService';
+import TemplatePicker from './components/TemplatePicker';
+import './components/Header.css';
 import './components/Resume.css';
 import './App.css';
 
@@ -71,8 +72,36 @@ function App() {
   if (authLoading) {
     return (
       <div className="auth-loading-screen">
-        <div className="auth-loading-spinner"></div>
-        <p>Checking your session...</p>
+        <div className="ls-content-wrapper">
+          <div className="ls-header">
+            <div className="ls-logo-box">
+              <span className="material-symbols-outlined">edit_document</span>
+            </div>
+            <h1 className="ls-title">ResumeStudio</h1>
+          </div>
+
+          <div className="ls-card">
+            <h2 className="ls-card-title">Curating your professional story...</h2>
+            <p className="ls-card-desc">
+              We are aligning your achievements with industry-standard benchmarks for executive visibility.
+            </p>
+
+            <div className="ls-progress-container">
+              <div className="ls-progress-track">
+                <div className="ls-progress-fill"></div>
+              </div>
+              <div className="ls-progress-labels">
+                <span className="ls-progress-label">Analyzing Narrative</span>
+                <span className="ls-progress-pct">65%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="ls-footer">
+          <span className="material-symbols-outlined">shield</span>
+          <span className="ls-footer-text">Encrypted Studio Environment</span>
+        </div>
       </div>
     );
   }
@@ -103,7 +132,6 @@ function MainApp({ user, onLogout }) {
   const [themeMode, setThemeMode] = useState(getInitialThemeMode);
   const [isMobileView, setIsMobileView] = useState(getIsMobileViewport);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
-  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
 
   const resumeStorageKey = `resumeData:${user.id}`;
@@ -238,14 +266,6 @@ function MainApp({ user, onLogout }) {
     setView('editor');
   };
 
-  const handleBackToPrevious = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-      return;
-    }
-    setView('dashboard');
-  };
-
   const handleGoToMainPage = () => {
     setView('dashboard');
   };
@@ -272,6 +292,28 @@ function MainApp({ user, onLogout }) {
     return <AtelierPortfolio data={data} onExit={() => setView('dashboard')} />;
   }
 
+  if (view === 'templatepicker') {
+    return (
+      <TemplatePicker 
+        onBack={() => setView('dashboard')}
+        onSelect={(templateId) => {
+          if (window.confirm('Create new resume? This will overwrite your current draft.')) {
+            const nextData = {
+              ...initialResumeState,
+              settings: {
+                ...initialResumeState.settings,
+                template: templateId
+              }
+            };
+            setData(nextData);
+            setEditorAccentColor(nextData.settings.themeColor || '#004AAD');
+            setView('editor');
+          }
+        }}
+      />
+    );
+  }
+
   if (view === 'dashboard') {
     return (
       <>
@@ -289,11 +331,7 @@ function MainApp({ user, onLogout }) {
           onDelete={handleDeleteResume}
           onLoad={handleLoadResume}
           onViewPortfolio={() => setView('portfolio')}
-          onNew={() => {
-            if (window.confirm('Create new resume? This will overwrite your current draft.')) {
-              setIsTemplateModalOpen(true);
-            }
-          }}
+          onNew={() => setView('templatepicker')}
         />
         <ResumeUploadModal
           isOpen={isUploadOpen}
@@ -303,55 +341,38 @@ function MainApp({ user, onLogout }) {
             setView('dashboard');
           }}
         />
-        <TemplateSelectionModal
-          isOpen={isTemplateModalOpen}
-          onClose={() => setIsTemplateModalOpen(false)}
-          onSelect={(templateId) => {
-            const nextData = {
-              ...initialResumeState,
-              settings: {
-                ...initialResumeState.settings,
-                template: templateId
-              }
-            };
-            setData(nextData);
-            setEditorAccentColor(nextData.settings.themeColor || '#004AAD');
-            setIsTemplateModalOpen(false);
-            setView('editor');
-          }}
-        />
       </>
     );
   }
 
+  // ── Editor View ──
   return (
     <div className="editor-app-shell" style={{ '--editor-accent': editorAccentColor }}>
       <style>{scannerStyle}</style>
 
       <Header
+        title="Resume Fix"
+        subtitle="Editor Studio"
         onBack={handleGoToMainPage}
         onLogout={onLogout}
         user={user}
         themeMode={themeMode}
         onToggleTheme={handleToggleTheme}
       >
-        <label 
-          htmlFor="accentColorPicker" 
-          className="flex items-center gap-2.5 px-6 py-3 bg-gradient-to-r from-[#d7c4a5] to-[#c5a059] text-on-primary-container font-extrabold rounded-xl cursor-pointer text-xs uppercase tracking-[0.1em] relative group active:scale-[0.98] transition-transform shadow-md"
-        >
-          <span className="material-symbols-outlined text-[18px] group-hover:rotate-12 transition-transform">palette</span>
+        <label className="editor-action-btn editor-action-btn-accent" htmlFor="accentColorPicker">
+          <span className="material-symbols-outlined">palette</span>
           Color
           <input
             id="accentColorPicker"
             type="color"
             value={editorAccentColor}
             onChange={(e) => handleAccentColorChange(e.target.value)}
-            className="absolute opacity-0 w-0 h-0 overflow-hidden"
+            className="editor-color-hidden-input"
           />
         </label>
-        <button className="flex items-center gap-2.5 px-6 py-3 text-on-surface-variant hover:text-on-surface font-bold rounded-xl hover:bg-surface-container-low transition-colors text-xs uppercase tracking-[0.1em] active:scale-[0.98]">
-          <span className="material-symbols-outlined text-[18px]">grid_view</span>
-          Layout
+        <button className="editor-action-btn editor-action-btn-ghost" onClick={onLogout}>
+          <span className="material-symbols-outlined">logout</span>
+          Logout
         </button>
       </Header>
 

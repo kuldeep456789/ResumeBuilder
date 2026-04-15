@@ -1,79 +1,111 @@
 import React from 'react';
 
-const Header = ({ 
-  title, 
-  subtitle, 
-  onBack, 
-  onLogout, 
+const Header = ({
+  title,
+  subtitle,
+  onBack,
+  onLogout,
+  user,
   themeMode = 'dark',
   onToggleTheme,
   children,
-  className = "" 
+  activeView,
+  onNavigate,
+  className = ""
 }) => {
   const nextThemeLabel = themeMode === 'light' ? 'dark' : 'light';
 
+  const navItems = onNavigate ? [
+    { id: 'dashboard', label: 'Dashboard', icon: 'space_dashboard' },
+    { id: 'editor', label: 'Editor', icon: 'edit_note' },
+    { id: 'portfolio', label: 'Portfolio', icon: 'auto_stories' },
+  ] : [];
+
   return (
-    <header className={`bg-background pt-6 pb-4 px-6 md:px-8 border-b border-outline-variant/15 sticky top-0 z-50 flex flex-col gap-6 ${className}`}>
-      {/* Top Row: Navigation and Brand */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <header className={`rf-navbar ${className}`}>
+      <div className="rf-navbar-inner">
+        {/* Left: Logo + Brand */}
+        <div className="rf-navbar-left">
           {onBack && (
             <button
               type="button"
               onClick={onBack}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-surface-container-high border border-outline-variant/20 hover:bg-surface-container-highest transition-colors text-on-surface active:scale-95 shadow-sm"
+              className="rf-navbar-back-btn"
               aria-label="Back"
-              title="Back"
+              title="Back to Dashboard"
             >
-              <span className="material-symbols-outlined text-[22px]">chevron_left</span>
+              <span className="material-symbols-outlined">arrow_back</span>
             </button>
           )}
-          <div className="flex flex-col justify-center">
-            <h2 className="font-headline text-2xl md:text-3xl text-primary leading-tight font-bold tracking-tight">
-              {title || 'Professional Editor Workspace'}
-            </h2>
-            <p className="text-[10px] md:text-xs uppercase font-body tracking-[0.2em] font-bold text-on-surface-variant/60 mt-1">
-              {subtitle || 'Resume Studio Atelier'}
-            </p>
+          <div className="rf-navbar-brand">
+            <div className="rf-navbar-logo">
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>description</span>
+            </div>
+            <div className="rf-navbar-brand-text">
+              <h1 className="rf-navbar-title">{title || 'Resume Fix'}</h1>
+              <span className="rf-navbar-subtitle">{subtitle || 'Professional Studio'}</span>
+            </div>
           </div>
         </div>
-        
-        <div className="flex items-center gap-4">
+
+        {/* Center: Navigation Links */}
+        {navItems.length > 0 && (
+          <nav className="rf-navbar-nav">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`rf-nav-link ${activeView === item.id ? 'active' : ''}`}
+                onClick={() => onNavigate(item.id)}
+              >
+                <span className="material-symbols-outlined rf-nav-icon">{item.icon}</span>
+                <span className="rf-nav-label">{item.label}</span>
+              </button>
+            ))}
+          </nav>
+        )}
+
+        {/* Center: Custom Actions (e.g., color picker, layout) */}
+        {children && (
+          <div className="rf-navbar-actions">
+            {children}
+          </div>
+        )}
+
+        {/* Right: User Controls */}
+        <div className="rf-navbar-right">
           <button
             type="button"
             onClick={onToggleTheme}
-            className="w-12 h-12 rounded-2xl bg-surface-container-highest flex justify-center items-center overflow-hidden border border-outline-variant/30 shadow-inner text-primary hover:text-on-surface active:scale-95 transition-colors"
+            className="rf-navbar-icon-btn"
             aria-label={`Switch to ${nextThemeLabel} mode`}
             title={`Switch to ${nextThemeLabel} mode`}
           >
-            <span className="material-symbols-outlined text-[22px]">
+            <span className="material-symbols-outlined">
               {themeMode === 'light' ? 'dark_mode' : 'light_mode'}
             </span>
           </button>
-          {/* Logout button can go here or in the actions row depending on the view. 
-              Based on the image, it's in the actions row bottom right. 
-          */}
-        </div>
-      </div>
 
-      {/* Action Row / Contextual Area */}
-      {children && (
-        <div className="flex items-center justify-between">
-          <div className="flex bg-surface-container-lowest p-1.5 rounded-2xl border border-outline-variant/10 shadow-sm">
-            {children}
-          </div>
+          {user && (
+            <div className="rf-navbar-user-badge">
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>person</span>
+              <span className="rf-user-name">{user.fullName || user.email || 'User'}</span>
+            </div>
+          )}
 
           {onLogout && (
             <button
+              type="button"
               onClick={onLogout}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl text-[#d7c4a5]/70 hover:text-error hover:bg-error/10 transition-colors border border-transparent hover:border-error/20"
-              title="Logout"
+              className="rf-navbar-icon-btn rf-logout-btn"
+              title="Sign Out"
+              aria-label="Sign Out"
             >
-              <span className="material-symbols-outlined text-[22px]">logout</span>
+              <span className="material-symbols-outlined">logout</span>
             </button>
           )}
         </div>
-      )}
+      </div>
     </header>
   );
 };
