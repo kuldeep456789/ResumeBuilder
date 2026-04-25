@@ -228,6 +228,29 @@
   z-index: 2;
 }
 
+.tp-card-preview-container {
+  height: 280px;
+  width: 100%;
+  background: var(--surface-2);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.tp-card-preview-target {
+  /* This forces the component to render at a standard A4 desktop width */
+  width: 800px;
+  height: 1100px;
+  transform-origin: top center;
+  transform: scale(0.42); /* scales 800px down to ~336px to fit the card well */
+  margin-top: -10px; /* offset top padding to make it look nicer purely in thumbnail */
+  pointer-events: none; /* so user can't click internal links */
+  background: white; /* guarantee background */
+}
+
 /* Hover overlay */
 .tp-card-overlay {
   position: absolute;

@@ -34,21 +34,22 @@ const Dashboard = ({ user, onLogout, onEdit, onNew, onUpload, data, atsScore, on
       />
 
       <main className="dash-main">
+        <div className="dash-background-glow"></div>
         <div className="dash-container">
           {/* ── Left Column: Hero + Actions ── */}
           <section className="dash-hero">
 
-            <h2 className="dash-headline">
+            <h2 className="dash-headline stagger-1">
               Craft Your <span className="dash-headline-accent">Story</span>
             </h2>
 
-            <p className="dash-description">
+            <p className="dash-description stagger-2">
               Refine your narrative, sharpen your impact, and create a resume that stands out.
               ATS-optimized for maximum visibility.
             </p>
 
             {/* Stats Row */}
-            <div className="dash-stats-row">
+            <div className="dash-stats-row stagger-3">
               <div className="dash-stat-card">
                 <span className="dash-stat-label">ATS Score</span>
                 <div className="dash-stat-value" style={{ color: scoreColor }}>{score}<span className="dash-stat-unit">/100</span></div>
@@ -64,7 +65,7 @@ const Dashboard = ({ user, onLogout, onEdit, onNew, onUpload, data, atsScore, on
             </div>
 
             {/* Primary Actions */}
-            <div className="dash-actions-primary">
+            <div className="dash-actions-primary stagger-4">
               <button onClick={onEdit} className="dash-btn dash-btn-primary" id="btn-continue-editing">
                 <span className="material-symbols-outlined">edit_note</span>
                 Continue Editing
@@ -76,7 +77,7 @@ const Dashboard = ({ user, onLogout, onEdit, onNew, onUpload, data, atsScore, on
             </div>
 
             {/* Secondary Actions */}
-            <div className="dash-actions-secondary">
+            <div className="dash-actions-secondary stagger-5">
               <button onClick={onNew} className="dash-action-card" id="btn-new-resume">
                 <div className="dash-action-icon">
                   <span className="material-symbols-outlined">add_circle</span>
@@ -99,7 +100,7 @@ const Dashboard = ({ user, onLogout, onEdit, onNew, onUpload, data, atsScore, on
           </section>
 
           {/* ── Right Column: Preview Card ── */}
-          <aside className="dash-preview">
+          <aside className="dash-preview stagger-6">
             <div className="dash-preview-card">
               <div className="dash-preview-glow"></div>
 

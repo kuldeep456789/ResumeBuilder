@@ -11,7 +11,21 @@
   color: var(--rf-text-primary);
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
 }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.stagger-1 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+.stagger-2 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.stagger-3 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+.stagger-4 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+.stagger-5 { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both; }
+.stagger-6 { animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both; }
 
 .dash-main {
   flex: 1;
@@ -19,6 +33,22 @@
   max-width: 1280px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.dash-background-glow {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  height: 600px;
+  background: radial-gradient(circle, rgba(99,56,240,0.06) 0%, rgba(212,168,83,0.04) 40%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* ── Layout: Two Column ── */
@@ -67,8 +97,10 @@
 
 .dash-stat-card {
   padding: 16px 18px;
-  background: var(--rf-bg-card);
-  border: 1px solid var(--rf-border);
+  background: rgba(18, 16, 30, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--rf-radius-md);
   transition: all var(--rf-transition-default);
 }
@@ -174,8 +206,10 @@
   align-items: center;
   gap: 14px;
   padding: 18px 20px;
-  background: var(--rf-bg-card);
-  border: 1px solid var(--rf-border);
+  background: rgba(18, 16, 30, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--rf-radius-lg);
   text-align: left;
   cursor: pointer;
@@ -245,10 +279,12 @@
 .dash-preview-card {
   position: relative;
   padding: 28px;
-  background: var(--rf-bg-card);
-  border: 1px solid var(--rf-border);
+  background: rgba(18, 16, 30, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--rf-radius-xl);
-  box-shadow: var(--rf-shadow-lg);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
   overflow: hidden;
 }
 
