@@ -176,7 +176,13 @@ function MainApp({ user, onLogout }) {
     } catch (e) {
       console.error('Error loading resume data:', e);
     }
-    return initialResumeState;
+    return {
+      ...initialResumeState,
+      header: {
+        ...initialResumeState.header,
+        name: user?.name || initialResumeState.header.name
+      }
+    };
   });
 
   const [isScanning, setIsScanning] = useState(false);
@@ -309,6 +315,10 @@ function MainApp({ user, onLogout }) {
           if (window.confirm('Create new resume? This will overwrite your current draft.')) {
             const nextData = {
               ...initialResumeState,
+              header: {
+                ...initialResumeState.header,
+                name: user?.name || initialResumeState.header.name
+              },
               settings: {
                 ...initialResumeState.settings,
                 template: templateId
