@@ -176,6 +176,10 @@ const TemplatePicker = ({ onSelect, onBack }) => {
         </div>
       </div>
       
+      <div className="tp-bottom-note">
+        <span className="material-symbols-outlined">info</span>
+        You can switch templates at any time from the editor settings.
+      </div>
       <div className="tp-footer-gradient" />
     </div>
   );

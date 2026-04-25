@@ -559,7 +559,27 @@
 }
 
 @media (max-width: 480px) {
-  .tp-card-preview {
+  .tp-card-preview-container {
     height: 260px;
   }
+}
+
+.tp-bottom-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 40px auto;
+  color: var(--rf-text-muted);
+  font-size: 0.85rem;
+  background: rgba(255,255,255,0.03);
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.05);
+  max-width: max-content;
+}
+
+.tp-bottom-note .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--rf-accent);
 }
