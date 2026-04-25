@@ -303,6 +303,7 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                                 <option value="minimal">Clean Minimal (Simple)</option>
                                 <option value="business">Business Standard (Business)</option>
                                 <option value="simple">Simple & Clean (Beginner)</option>
+                                <option value="technical">Technical Pro (Professional)</option>
                             </select>
 
                             <label className="ed-label">Theme Color</label>

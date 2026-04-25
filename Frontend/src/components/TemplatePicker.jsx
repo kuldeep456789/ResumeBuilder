@@ -9,8 +9,19 @@ import ModernTemplate from './templates/ModernTemplate';
 import MinimalTemplate from './templates/MinimalTemplate';
 import BusinessTemplate from './templates/BusinessTemplate';
 import SimpleTemplate from './templates/SimpleTemplate';
+import TechnicalTemplate from './templates/TechnicalTemplate';
 
 const TEMPLATES = [
+  {
+    id: 'technical',
+    name: 'Technical Pro',
+    category: 'professional',
+    badge: 'New',
+    badgeColor: '#1d4ed8',
+    desc: 'Dense, strictly formatted, and data-driven — designed for software engineers and AI developers.',
+    tags: ['Tech', 'Data Dense', 'Engineering'],
+    Component: TechnicalTemplate
+  },
   {
     id: 'executive',
     name: 'Executive Pro',

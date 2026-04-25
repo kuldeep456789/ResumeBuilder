@@ -6,6 +6,7 @@ import MinimalTemplate from './templates/MinimalTemplate';
 import BusinessTemplate from './templates/BusinessTemplate';
 import SimpleTemplate from './templates/SimpleTemplate';
 import StandardTemplate from './templates/StandardTemplate';
+import TechnicalTemplate from './templates/TechnicalTemplate';
 
 // Map template IDs to their respective components
 const TEMPLATE_COMPONENTS = {
@@ -15,7 +16,8 @@ const TEMPLATE_COMPONENTS = {
     minimal: MinimalTemplate,
     business: BusinessTemplate,
     simple: SimpleTemplate,
-    standard: StandardTemplate
+    standard: StandardTemplate,
+    technical: TechnicalTemplate
 };
 
 const Resume = React.forwardRef(({ data }, ref) => {
