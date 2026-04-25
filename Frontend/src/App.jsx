@@ -30,6 +30,15 @@ function App() {
         return;
       }
 
+      // Guest sessions don't need backend validation
+      if (existingSession.token === 'guest-token') {
+        if (isMounted) {
+          setAuthUser(existingSession.user);
+          setAuthLoading(false);
+        }
+        return;
+      }
+
       try {
         const profile = await fetchCurrentUser(existingSession.token);
         const refreshedSession = {

@@ -21,9 +21,28 @@ const AuthPage = ({ onAuthSuccess }) => {
   const [signUpForm, setSignUpForm] = useState(initialSignUpState);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [guestLoading, setGuestLoading] = useState(false);
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const isGoogleEnabled = useMemo(() => Boolean(googleClientId), [googleClientId]);
+
+  const handleGuestLogin = () => {
+    setGuestLoading(true);
+    setTimeout(() => {
+      const guestSession = {
+        token: 'guest-token',
+        user: {
+          id: 'guest',
+          fullName: 'Guest User',
+          email: 'guest@resumestudio.local',
+          isGuest: true
+        }
+      };
+      clearSession();
+      saveSession(guestSession);
+      onAuthSuccess(guestSession);
+    }, 600);
+  };
 
   const handleSessionSuccess = (sessionPayload) => {
     clearSession();
@@ -256,6 +275,29 @@ const AuthPage = ({ onAuthSuccess }) => {
           )}
 
           {error && <div className="auth-error">{error}</div>}
+
+          {/* Guest Login */}
+          <div className="auth-guest-divider">
+            <span>or</span>
+          </div>
+          <button
+            type="button"
+            className="auth-guest-btn"
+            onClick={handleGuestLogin}
+            disabled={guestLoading || isSubmitting}
+          >
+            {guestLoading ? (
+              <>
+                <span className="auth-guest-spinner"></span>
+                Entering Studio...
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined">person</span>
+                Continue as Guest — Free &amp; No Sign-Up
+              </>
+            )}
+          </button>
         </div>
       </main>
     </div>

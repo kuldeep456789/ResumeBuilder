@@ -87,9 +87,12 @@ const Header = ({
           </button>
 
           {user && (
-            <div className="rf-navbar-user-badge">
-              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>person</span>
-              <span className="rf-user-name">{user.fullName || user.email || 'User'}</span>
+            <div className={`rf-navbar-user-badge ${user.isGuest ? 'rf-navbar-user-badge--guest' : ''}`}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
+                {user.isGuest ? 'person_outline' : 'person'}
+              </span>
+              <span className="rf-user-name">{user.isGuest ? 'Guest' : (user.fullName || user.email || 'User')}</span>
+              {user.isGuest && <span className="rf-guest-chip">Free</span>}
             </div>
           )}
 

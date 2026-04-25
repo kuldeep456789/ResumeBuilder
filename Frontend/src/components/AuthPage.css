@@ -351,6 +351,86 @@ input:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* ── Guest Login ─────────────────────────────────────────── */
+.auth-guest-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.1rem 0;
+}
+
+.auth-guest-divider::before,
+.auth-guest-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(215, 196, 165, 0.2);
+}
+
+.auth-guest-divider span {
+  color: rgba(222, 196, 155, 0.55);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.auth-guest-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1.5px dashed rgba(239, 201, 127, 0.38);
+  border-radius: 12px;
+  background: rgba(239, 201, 127, 0.04);
+  color: rgba(239, 201, 127, 0.82);
+  padding: 0.82rem 1rem;
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.auth-guest-btn .material-symbols-outlined {
+  font-size: 1.05rem;
+  opacity: 0.85;
+}
+
+.auth-guest-btn:hover:not(:disabled) {
+  border-color: rgba(239, 201, 127, 0.7);
+  background: rgba(239, 201, 127, 0.1);
+  color: #f5d499;
+  transform: translateY(-1px);
+}
+
+.auth-guest-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.auth-guest-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.auth-guest-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(239, 201, 127, 0.3);
+  border-top-color: #efc97f;
+  border-radius: 50%;
+  animation: guestSpin 0.7s linear infinite;
+}
+
+@keyframes guestSpin {
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 640px) {
   .auth-main-container {
     gap: 1.25rem;
