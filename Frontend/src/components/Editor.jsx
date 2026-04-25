@@ -297,9 +297,12 @@ const Editor = ({ data, atsScore, onChange, onDownload, onReset, onSave, onCheck
                                 onChange={(e) => handleChange('settings', 'template', e.target.value)}
                                 className="ed-select"
                             >
-                                <option value="standard">Standard Professional</option>
-                                <option value="modern">Modern Creative</option>
-                                <option value="minimalist">Minimalist Exec</option>
+                                <option value="executive">Executive Pro (Professional)</option>
+                                <option value="corporate">Corporate Elite (Business)</option>
+                                <option value="modern">Modern Creative (Creative)</option>
+                                <option value="minimal">Clean Minimal (Simple)</option>
+                                <option value="business">Business Standard (Business)</option>
+                                <option value="simple">Simple & Clean (Beginner)</option>
                             </select>
 
                             <label className="ed-label">Theme Color</label>
