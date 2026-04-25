@@ -81,7 +81,7 @@ const TechnicalTemplate = React.forwardRef(({ data }, ref) => {
               </div>
               {exp.description && (
                 <ul className="tpl-technical-bullets">
-                  {exp.description.split('\n').map((bullet, i) => {
+                  {(Array.isArray(exp.description) ? exp.description : exp.description.split('\n')).map((bullet, i) => {
                     const text = bullet.trim().replace(/^[-•]\s*/, '');
                     return text ? <li key={i}>{text}</li> : null;
                   })}
@@ -109,7 +109,7 @@ const TechnicalTemplate = React.forwardRef(({ data }, ref) => {
               </div>
               {proj.description && (
                 <ul className="tpl-technical-bullets">
-                  {proj.description.split('\n').map((bullet, i) => {
+                  {(Array.isArray(proj.description) ? proj.description : proj.description.split('\n')).map((bullet, i) => {
                     const text = bullet.trim().replace(/^[-•]\s*/, '');
                     return text ? <li key={i}>{text}</li> : null;
                   })}
